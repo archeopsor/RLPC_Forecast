@@ -109,3 +109,4 @@ nb-configuration.xml
 ## SECRETS
 ##############################
 creds.json
+StoredCredential
