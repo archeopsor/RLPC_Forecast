@@ -62,6 +62,20 @@ public class SheetsHandler {
     }
 
     /**
+     * Creates an authorized client service
+     * 
+     * @return Authorized API client service
+     * @throws IOException
+     * @throws GeneralSecurityException
+     */
+    private static Sheets getService() throws IOException, GeneralSecurityException {
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME).build();
+        return service;
+    }
+
+    /**
      * 
      * @param spreadsheetId
      * @param range
@@ -71,10 +85,7 @@ public class SheetsHandler {
      */
     public static List<List<Object>> getValues(String spreadsheetId, String range)
             throws IOException, GeneralSecurityException {
-        // Build a new authorized API client service.
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME).build();
+        Sheets service = getService();
         ValueRange response = service.spreadsheets().values().get(spreadsheetId, range).execute();
         List<List<Object>> values = response.getValues();
         if (values == null || values.isEmpty()) {
@@ -95,10 +106,7 @@ public class SheetsHandler {
      */
     public static AppendValuesResponse append(String spreadsheetId, String range, List<List<Object>> values)
             throws IOException, GeneralSecurityException {
-        // Build a new authorized API client service.
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME).build();
+        Sheets service = getService();
         ValueRange body = new ValueRange().setValues(values);
         AppendValuesResponse response = service.spreadsheets().values().append(spreadsheetId, range, body).execute();
         return response;
@@ -114,10 +122,7 @@ public class SheetsHandler {
      */
     public static ClearValuesResponse clear(String spreadsheetId, String range)
             throws IOException, GeneralSecurityException {
-        // Build a new authorized API client service.
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME).build();
+        Sheets service = getService();
         ClearValuesRequest request = new ClearValuesRequest();
         ClearValuesResponse response = service.spreadsheets().values().clear(spreadsheetId, range, request).execute();
         return response;
