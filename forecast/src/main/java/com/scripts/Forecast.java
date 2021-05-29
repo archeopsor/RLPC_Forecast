@@ -10,15 +10,21 @@ import java.util.List;
 
 public class Forecast {
 
-    private static final String p4SheetId = "1umoAxAcVLkE_XKlpTNNdc42rECU7-GtoDvUhEXja7XA";
-    private static final String indySheetId = "10cLowvKoG5tAtLNS9NEk808vROULHl5KMU0LduBNqbI";
+    private static final String p4SheetId = "1gHlqD-xekmpwFDpblAiJfpuCvxRliK6C-AjYoEUU8tc"; // "1AJoBYkYGMIrpe8HkkJcB25DbLP2Z-eV7P6Tk9R6265I";
+    private static final String indySheetId = "1bWvgo_YluMbpQPheldQQZdASKGHRPIUVfYL2r2KSdaE";
     private static final String powerRankingsSheetId = "1Tlc_TgGMrY5aClFF-Pb5xvtKrJ1Hn2PJOLy2fUDDdFI";
     private static final String forecastSheetId = "1GEFufHK5xt0WqThYC7xaK2gz3cwjinO43KOsb7HogQQ";
 
-    private static List<List<Object>> getWins(String league) throws IOException, GeneralSecurityException {
+    private static HashMap<String, Integer> getWins(String league) throws IOException, GeneralSecurityException {
         final String teamWinsRange = Utils.teamWinRanges(league);
         List<List<Object>> wins = SheetsHandler.getValues(powerRankingsSheetId, teamWinsRange);
-        return wins;
+        HashMap<String, Integer> winsMap = new HashMap<String, Integer>();
+
+        for (List<Object> team : wins) {
+            winsMap.put(team.get(0).toString(), Integer.parseInt(team.get(1).toString()));
+        }
+
+        return winsMap;
     }
 
     private static List<List<Object>> getSchedule(String league) throws IOException, GeneralSecurityException {
@@ -33,15 +39,16 @@ public class Forecast {
         } else {
             throw new IOException(league + " isn't a valid league.");
         }
+
         return schedule;
     }
 
-    private static List<Object> playGame(String team1, String team2, Integer rating1, Integer rating2,
-            boolean playoffs) {
-        Integer Q1 = (int) Math.pow(10, (rating1 / 250));
-        Integer Q2 = (int) Math.pow(10, (rating2 / 250));
-        float team1WinProbability = Q1 / (Q1 + Q2);
-        float team2WinProbability = Q2 / (Q1 + Q2);
+    private static List<Object> playGame(String team1, String team2, Integer rating1, Integer rating2, boolean playoffs)
+            throws IOException {
+        Integer Q1 = (int) Math.pow(10.0, ((double) rating1 / 250.0));
+        Integer Q2 = (int) Math.pow(10.0, ((double) rating2 / 250.0));
+        float team1WinProbability = (float) Q1 / (float) (Q1 + Q2);
+        float team2WinProbability = (float) Q2 / (float) (Q1 + Q2);
         int numGames = (playoffs) ? 4 : 3;
 
         List<Object> teams = new ArrayList<Object>();
@@ -54,18 +61,48 @@ public class Forecast {
 
         // Randomly pick winner based on the probabilities, and pick a random score
         String winner = Utils.getRandomElement(teams, probabilities).toString();
+        String loser = (winner == team1) ? team2 : team1;
         int team1Score = (winner == team1) ? numGames : Utils.randBetween(0, numGames - 1);
         int team2Score = (winner == team2) ? numGames : Utils.randBetween(0, numGames - 1);
 
+        // Generate expected score and actual score to update ratings
+        float E1 = (float) Q1 / (float) (Q1 + Q2); // Expected Score
+        float E2 = (float) Q2 / (float) (Q1 + Q2);
+        float S1 = (float) team1Score / (float) (team1Score + team2Score); // Actual score
+        float S2 = (float) team2Score / (float) (team1Score + team2Score);
+        String score = "3 - " + Math.min(team1Score, team2Score);
+
         List<Object> result = new ArrayList<Object>();
         result.add(winner);
-        result.add(team1Score);
-        result.add(team2Score);
+        result.add(loser);
+        result.add(S1 - E1);
+        result.add(S2 - E2);
+        result.add(score);
         return result;
     }
 
-    private static void simulateSeason(String league, List<List<Object>> schedule, List<List<Object>> wins,
-            HashMap<String, Integer> ratings) {
+    private static List<String> getPlayoffs(HashMap<String, Integer> wins, List<List<Object>> schedule) {
+
+    }
+
+    private static void simulateSeason(String league, List<List<Object>> schedule, HashMap<String, Integer> wins,
+            HashMap<String, Integer> ratings) throws IOException {
+
+        // Get a copy of the schedule for use in tiebreakers
+        // Both played and unplayed games will be added to this list
+        List<List<Object>> tiebreakSchedule = new ArrayList<List<Object>>();
+
+        for (int i = 0; i < schedule.size(); i++) {
+            if (schedule.get(i).get(5).toString().length() > 0) {
+                List<Object> toRemove = schedule.remove(i);
+                tiebreakSchedule.add(toRemove);
+                i--;
+            } else if (schedule.get(i).get(1).toString() == "Y") {
+                schedule.remove(i);
+                i--;
+            }
+        }
+
         for (List<Object> game : schedule) {
             String team1 = game.get(2).toString();
             String team2 = game.get(4).toString();
@@ -74,7 +111,34 @@ public class Forecast {
 
             // Simulate this game being played
             List<Object> result = playGame(team1, team2, rating1, rating2, false);
+
+            // Add result to the tiebreakSchedule
+            List<Object> gameResult = new ArrayList<Object>();
+            gameResult.add(game.get(0));
+            gameResult.add(game.get(1));
+            gameResult.add(game.get(2));
+            gameResult.add(game.get(3));
+            gameResult.add(game.get(4));
+            gameResult.add(result.get(0).toString());
+            gameResult.add(result.get(4).toString());
+            gameResult.add(game.get(7));
+            gameResult.add(game.get(8));
+            tiebreakSchedule.add(gameResult);
+
+            // Add win to winner
+            Integer winnerWins = wins.get(result.get(0).toString());
+            wins.put(result.get(0).toString(), winnerWins + 1);
+
+            // Change ratings of both teams
+            Integer newRating1 = (int) ( (float) rating1 + (Utils.k * Float.parseFloat(result.get(2).toString())) );
+            Integer newRating2 = (int) ( (float) rating2 + (Utils.k * Float.parseFloat(result.get(3).toString())) );
+            ratings.put(result.get(0).toString(), newRating1);
+            ratings.put(result.get(1).toString(), newRating2);
         }
+
+        // Get playoff teams
+
+        System.out.println(wins);
     }
 
     public static void runForecast(String[] args) throws IOException, GeneralSecurityException, SQLException {
@@ -91,7 +155,7 @@ public class Forecast {
 
         // Useful data
         List<List<Object>> schedule = getSchedule(league);
-        List<List<Object>> wins = getWins(league);
+        HashMap<String, Integer> wins = getWins(league);
         HashMap<String, Integer> ratings = Database.getElo();
 
         // List of teams that make it to each stage
@@ -105,27 +169,18 @@ public class Forecast {
         HashMap<String, Float> champProbabilities = new HashMap<String, Float>();
         HashMap<String, Float> predictedRecords = new HashMap<String, Float>();
 
-        // Make copies of useful data
-        HashMap<String, Integer> ratingsCopy = new HashMap<String, Integer>(ratings);
-
         // Begin simulating seasons
         for (Integer i = 0; i <= num_times; i++) {
             System.out.println("Simulation #" + i + "       " + league);
-            simulateSeason(league, schedule, wins, ratingsCopy);
+            // Make copies of useful data
+            HashMap<String, Integer> ratingsCopy = new HashMap<String, Integer>(ratings);
+            HashMap<String, Integer> winsCopy = new HashMap<String, Integer>(wins);
+            simulateSeason(league, schedule, winsCopy, ratingsCopy);
         }
     }
 
-    public static void main(String[] args) throws IOException, GeneralSecurityException {
-        List<Object> teams = new ArrayList<Object>();
-        teams.add("team 1");
-        teams.add("team 2");
-
-        List<Float> probabilities = new ArrayList<Float>();
-        probabilities.add((float) 0.2);
-        probabilities.add((float) 0.8);
-
-        for (int i = 0; i <= 100; i++) {
-            System.out.println(Utils.getRandomElement(teams, probabilities));
-        }
+    public static void main(String[] args) throws IOException, GeneralSecurityException, SQLException {
+        // System.out.println(getSchedule("major"));
+        simulateSeason("major", getSchedule("major"), getWins("major"), Database.getElo());
     }
 }

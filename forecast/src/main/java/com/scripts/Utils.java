@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Utils {
+    public static final int k = 32;
+
     /**
      * Get range for Team wins for any given league
      * 
