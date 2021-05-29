@@ -34,6 +34,12 @@ public class Database {
         return conn;
     }
 
+    /**
+     * Gets map of elo ratings for all RLPC teams
+     * 
+     * @return HashMap of teams and their respective elo ratings
+     * @throws SQLException
+     */
     public static HashMap<String, Integer> getElo() throws SQLException {
         Connection conn = connect();
         Statement st = conn.createStatement();
@@ -45,13 +51,5 @@ public class Database {
         rs.close();
         st.close();
         return ratings;
-    }
-
-    /**
-     * @param args the command line arguments
-     * @throws SQLException
-     */
-    public static void main(String[] args) throws SQLException {
-        System.out.println(getElo());
     }
 }

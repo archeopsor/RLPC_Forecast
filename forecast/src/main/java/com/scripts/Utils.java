@@ -1,6 +1,8 @@
 package com.scripts;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 public class Utils {
     /**
@@ -35,5 +37,42 @@ public class Utils {
         teams.put("paladin", new String[] {});
         
         return teams.get(league);
+    }
+
+    public static boolean isValidLeague(String league) {
+        league = league.toLowerCase();
+        switch(league) {
+            case "major": return true;
+            case "aaa": return true;
+            case "aa": return true;
+            case "a": return true;
+            case "independent": return true;
+            case "maverick": return true;
+            default: return false;
+            }
+        }
+
+    public static Object getRandomElement(List<Object> list, List<Float> probabilities) {
+        Random random = new Random();
+        final float r = (float) random.nextDouble();
+        float sum = (float) 0.0;
+        int index = 0;
+        for (float i : probabilities) {
+            if (r > sum && r < (sum+i)) {
+                return list.get(index);
+            } else {
+                index++;
+            }
+        }
+        return getRandomElement(list, probabilities);
+    }
+
+    public static int randBetween(int min, int max) {
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
     }
 }
