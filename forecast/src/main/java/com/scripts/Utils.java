@@ -1,5 +1,7 @@
 package com.scripts;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -76,5 +78,75 @@ public class Utils {
 
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
+    }
+
+    public static boolean inSameDivision(List<String> teams, String league) {
+        List<Integer> divisions = new ArrayList<Integer>();
+        String[] teamsList = teams(league);
+        for (String team : teams) {
+            int index = Arrays.binarySearch(teamsList, team);
+            divisions.add(Math.floorDiv(index, 4));
+        }
+        if (divisions.size() == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean inSameConference(List<String> teams, String league) {
+        List<Integer> divisions = new ArrayList<Integer>();
+        String[] teamsList = teams(league);
+        for (String team : teams) {
+            int index = Arrays.binarySearch(teamsList, team);
+            divisions.add(Math.floorDiv(index, 8));
+        }
+        if (divisions.size() == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static List<String> getDivisionTeams(String mainTeam, String league) throws Exception {
+        String[] teamsList = teams(league);
+        List<String> teamsInDivision = new ArrayList<String>();
+        teamsInDivision.add(mainTeam);
+        for (String team: teamsList) {
+            List<String> arrayWithTeams = new ArrayList<String>();
+            arrayWithTeams.add(mainTeam);
+            arrayWithTeams.add(team);
+            if (team == mainTeam) {
+                continue;
+            } else if (inSameDivision(arrayWithTeams, league)) {
+                teamsInDivision.add(team);
+            }
+        }
+        if (teamsInDivision.size() != 4) {
+            throw new Exception("Got an invalid number of teams in division");
+        } else {
+            return teamsInDivision;
+        }
+    }
+
+    public static List<String> getConferenceTeams(String mainTeam, String league) throws Exception {
+        String[] teamsList = teams(league);
+        List<String> teamsInConference = new ArrayList<String>();
+        teamsInConference.add(mainTeam);
+        for (String team: teamsList) {
+            List<String> arrayWithTeams = new ArrayList<String>();
+            arrayWithTeams.add(mainTeam);
+            arrayWithTeams.add(team);
+            if (team == mainTeam) {
+                continue;
+            } else if (inSameConference(arrayWithTeams, league)) {
+                teamsInConference.add(team);
+            }
+        }
+        if (teamsInConference.size() != 8) {
+            throw new Exception("Got an invalid number of teams in conference");
+        } else {
+            return teamsInConference;
+        }
     }
 }

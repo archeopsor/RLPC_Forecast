@@ -81,10 +81,6 @@ public class Forecast {
         return result;
     }
 
-    private static List<String> getPlayoffs(HashMap<String, Integer> wins, List<List<Object>> schedule) {
-
-    }
-
     private static void simulateSeason(String league, List<List<Object>> schedule, HashMap<String, Integer> wins,
             HashMap<String, Integer> ratings) throws IOException {
 
@@ -180,7 +176,7 @@ public class Forecast {
     }
 
     public static void main(String[] args) throws IOException, GeneralSecurityException, SQLException {
-        // System.out.println(getSchedule("major"));
-        simulateSeason("major", getSchedule("major"), getWins("major"), Database.getElo());
+        System.out.println(getSchedule("a"));
+        // simulateSeason("major", getSchedule("major"), getWins("major"), Database.getElo());
     }
 }
