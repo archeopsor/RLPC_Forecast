@@ -116,7 +116,7 @@ public class Utils {
             List<String> arrayWithTeams = new ArrayList<String>();
             arrayWithTeams.add(mainTeam);
             arrayWithTeams.add(team);
-            if (team == mainTeam) {
+            if (team.equals(mainTeam)) {
                 continue;
             } else if (inSameDivision(arrayWithTeams, league)) {
                 teamsInDivision.add(team);
@@ -137,7 +137,7 @@ public class Utils {
             List<String> arrayWithTeams = new ArrayList<String>();
             arrayWithTeams.add(mainTeam);
             arrayWithTeams.add(team);
-            if (team == mainTeam) {
+            if (team.equals(mainTeam)) {
                 continue;
             } else if (inSameConference(arrayWithTeams, league)) {
                 teamsInConference.add(team);

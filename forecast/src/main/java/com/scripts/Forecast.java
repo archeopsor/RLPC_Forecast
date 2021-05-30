@@ -61,9 +61,9 @@ public class Forecast {
 
         // Randomly pick winner based on the probabilities, and pick a random score
         String winner = Utils.getRandomElement(teams, probabilities).toString();
-        String loser = (winner == team1) ? team2 : team1;
-        int team1Score = (winner == team1) ? numGames : Utils.randBetween(0, numGames - 1);
-        int team2Score = (winner == team2) ? numGames : Utils.randBetween(0, numGames - 1);
+        String loser = (winner.equals(team1)) ? team2 : team1;
+        int team1Score = (winner.equals(team1)) ? numGames : Utils.randBetween(0, numGames - 1);
+        int team2Score = (winner.equals(team2)) ? numGames : Utils.randBetween(0, numGames - 1);
 
         // Generate expected score and actual score to update ratings
         float E1 = (float) Q1 / (float) (Q1 + Q2); // Expected Score
@@ -93,7 +93,7 @@ public class Forecast {
                 List<Object> toRemove = schedule.remove(i);
                 tiebreakSchedule.add(toRemove);
                 i--;
-            } else if (schedule.get(i).get(1).toString() == "Y") {
+            } else if (schedule.get(i).get(1).toString().equals("Y")) {
                 schedule.remove(i);
                 i--;
             }

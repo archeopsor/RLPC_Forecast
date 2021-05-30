@@ -15,11 +15,11 @@ public class Tiebreakers {
         List<String> headToHeadSeriesWinners = new ArrayList<String>(); // Should have size 2 at the end
         HashMap<String, Integer> headToHeadGamesLosses = new HashMap<String, Integer>(); // Should have size 2 at the end
         for (List<Object> game : schedule) {
-            if (game.get(2).toString() == team1 && game.get(4).toString() == team2) {
+            if (game.get(2).toString().equals(team1) && game.get(4).toString().equals(team2)) {
                 headToHeadSeriesWinners.add(game.get(5).toString());
                 Integer losses = Integer.parseInt(game.get(6).toString().split(" - ")[1]); 
                 headToHeadGamesLosses.put(game.get(5).toString(), losses + 3);
-            } else if (game.get(2).toString() == team2 && game.get(4).toString() == team1) {
+            } else if (game.get(2).toString().equals(team2) && game.get(4).toString().equals(team1)) {
                 headToHeadSeriesWinners.add(game.get(5).toString());
                 Integer losses = Integer.parseInt(game.get(6).toString().split(" - ")[1]); 
                 headToHeadGamesLosses.put(game.get(5).toString(), losses + 3);
@@ -27,7 +27,7 @@ public class Tiebreakers {
         }
 
         // See if one team won both head-to-head series
-        if (headToHeadSeriesWinners.get(0) == headToHeadSeriesWinners.get(1)) {
+        if (headToHeadSeriesWinners.get(0).equals(headToHeadSeriesWinners.get(1))) {
             return headToHeadSeriesWinners.get(0);
         }
 
@@ -45,12 +45,12 @@ public class Tiebreakers {
         List<String> conferenceTeams = Utils.getConferenceTeams(team1, league);
         for (List<Object> game : schedule) {
             // Get team 1 wins
-            if (game.get(2).toString() == team1 && conferenceTeams.contains(game.get(4).toString()) && game.get(5).toString() == team1) {
+            if (game.get(2).toString().equals(team1) && conferenceTeams.contains(game.get(4).toString()) && game.get(5).toString().equals(team1)) {
                 conferenceWins.set(0, conferenceWins.get(0) + 1);
                 if (divisionTeams.contains(game.get(4).toString())) {
                     divisionWins.set(0, divisionWins.get(0) + 1);
                 }
-            } else if (game.get(4).toString() == team1 && conferenceTeams.contains(game.get(2).toString()) && game.get(5).toString() == team1) {
+            } else if (game.get(4).toString().equals(team1) && conferenceTeams.contains(game.get(2).toString()) && game.get(5).toString().equals(team1)) {
                 conferenceWins.set(0, conferenceWins.get(0) + 1);
                 if (divisionTeams.contains(game.get(2).toString())) {
                     divisionWins.set(0, divisionWins.get(0) + 1);
@@ -58,12 +58,12 @@ public class Tiebreakers {
             }
 
             // Get team 2 wins
-            if (game.get(2).toString() == team2 && conferenceTeams.contains(game.get(4).toString()) && game.get(5).toString() == team2) {
+            if (game.get(2).toString().equals(team2) && conferenceTeams.contains(game.get(4).toString()) && game.get(5).toString().equals(team2)) {
                 conferenceWins.set(1, conferenceWins.get(1) + 1);
                 if (divisionTeams.contains(game.get(4).toString())) {
                     divisionWins.set(1, divisionWins.get(1) + 1);
                 }
-            } else if (game.get(4).toString() == team2 && conferenceTeams.contains(game.get(2).toString()) && game.get(5).toString() == team2) {
+            } else if (game.get(4).toString().equals(team2) && conferenceTeams.contains(game.get(2).toString()) && game.get(5).toString().equals(team2)) {
                 conferenceWins.set(1, conferenceWins.get(1) + 1);
                 if (divisionTeams.contains(game.get(2).toString())) {
                     divisionWins.set(1, divisionWins.get(1) + 1);
@@ -72,10 +72,18 @@ public class Tiebreakers {
         }
 
         // See if one team has a higher division record
-        
+        if (divisionWins.get(0) > divisionWins.get(1)) {
+            return team1;
+        } else if (divisionWins.get(1) > divisionWins.get(0)) {
+            return team2;
+        }
 
         // See if one team has a higher conference record
-
+        if (conferenceWins.get(0) > conferenceWins.get(1)) {
+            return team1;
+        } else if (conferenceWins.get(1) > conferenceWins.get(0)) {
+            return team2;
+        }
 
         // Randomly pick one team
         Random rand = new Random();
@@ -119,7 +127,7 @@ public class Tiebreakers {
     public static void getPlayoffs(HashMap<String, Integer> wins, List<List<Object>> schedule, String league) {
         // Get rid of preseason games in schedule
         for (int i = 0; i < schedule.size(); i++) {
-            if (schedule.get(i).get(5).toString().length() > 0) {
+            if (schedule.get(i).get(5).toString().equals("PRESEASON")) {
                 schedule.remove(i);
                 i--;
             }
