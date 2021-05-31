@@ -81,7 +81,7 @@ public class Forecast {
         return result;
     }
 
-    private static void simulateSeason(String league, List<List<Object>> schedule, HashMap<String, Integer> wins,
+    private static List<Object> simulateSeason(String league, List<List<Object>> schedule, HashMap<String, Integer> wins,
             HashMap<String, Integer> ratings) throws Exception {
 
         // Get a copy of the schedule for use in tiebreakers
