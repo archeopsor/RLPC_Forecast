@@ -5,6 +5,7 @@ import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -188,7 +189,7 @@ public class Forecast {
         return toReturn;
     }
 
-    public static void runForecast(String[] args) throws Exception {
+    public static List<HashMap<String, Float>> runForecast() throws SQLException, Exception {
         // Arguments
         String league = "major";
         Integer num_times = 10000;
@@ -206,35 +207,66 @@ public class Forecast {
         HashMap<String, Integer> ratings = Database.getElo();
 
         // List of teams that make it to each stage
-        String[] playoffTeams = {};
-        String[] semiTeams = {};
-        String[] finalTeams = {};
-        String[] champTeams = {};
+        List<String> playoffTeams = new ArrayList<String>();
+        List<String> semiTeams = new ArrayList<String>();
+        List<String> finalTeams = new ArrayList<String>();
+        List<String> champTeams = new ArrayList<String>();
         HashMap<String, Float> playoffProbabilities = new HashMap<String, Float>();
         HashMap<String, Float> semiProbabilities = new HashMap<String, Float>();
         HashMap<String, Float> finalProbabilities = new HashMap<String, Float>();
         HashMap<String, Float> champProbabilities = new HashMap<String, Float>();
+
         HashMap<String, Float> predictedRecords = new HashMap<String, Float>();
+        for (String team : wins.keySet()) {
+            predictedRecords.put(team, (float) 0);
+        }
 
         // Begin simulating seasons
-        for (Integer i = 0; i <= num_times; i++) {
-            System.out.println("Simulation #" + i + "       " + league);
+        for (Integer i = 0; i < num_times; i++) {
+            System.out.println("Simulation #" + (i+1) + "       " + league);
             // Make copies of useful data
             HashMap<String, Integer> ratingsCopy = new HashMap<String, Integer>(ratings);
             HashMap<String, Integer> winsCopy = new HashMap<String, Integer>(wins);
-            simulateSeason(league, schedule, winsCopy, ratingsCopy);
+            List<Object> simResult = simulateSeason(league, schedule, winsCopy, ratingsCopy);
+
+            // Add results to lists
+            playoffTeams.addAll((List<String>) simResult.get(3));
+            semiTeams.addAll((List<String>) simResult.get(2));
+            finalTeams.addAll((List<String>) simResult.get(1));
+            champTeams.add(simResult.get(0).toString());
+            HashMap<String, Integer> simWins = (HashMap<String, Integer>) simResult.get(4);
+            for (String team : simWins.keySet()) {
+                predictedRecords.put(team, predictedRecords.get(team) + (float) simWins.get(team));
+            }
         }
+
+        // Calculate results
+        for (String team : wins.keySet()) {
+            Integer playoffFrequency = Collections.frequency(playoffTeams, team);
+            playoffProbabilities.put(team, (float) (playoffFrequency / num_times));
+
+            Integer semiFrequency = Collections.frequency(semiTeams, team);
+            semiProbabilities.put(team, (float) (semiFrequency / num_times));
+
+            Integer finalFrequency = Collections.frequency(finalTeams, team);
+            finalProbabilities.put(team, (float) (finalFrequency / num_times));
+
+            Integer champFrequency = Collections.frequency(champTeams, team); 
+            champProbabilities.put(team, (float) (champFrequency / num_times));
+
+            predictedRecords.put(team, predictedRecords.get(team) / num_times);
+        }
+
+        List<HashMap<String, Float>> toReturn = new ArrayList<HashMap<String, Float>>();
+        toReturn.add(predictedRecords);
+        toReturn.add(playoffProbabilities);
+        toReturn.add(semiProbabilities);
+        toReturn.add(finalProbabilities);
+        toReturn.add(champProbabilities);
+        return toReturn;
     }
 
     public static void main(String[] args) throws Exception {
-        List<List<Object>> schedule = getSchedule("major");
-        HashMap<String, Integer> wins = getWins("major");
-        HashMap<String, Integer> ratings = Database.getElo();
-
-        for (int i = 0; i < 1000; i++){
-            HashMap<String, Integer> ratingsCopy = new HashMap<String, Integer>(ratings);
-            HashMap<String, Integer> winsCopy = new HashMap<String, Integer>(wins);
-            System.out.println(simulateSeason("major", schedule, winsCopy, ratingsCopy));
-        }
+        System.out.println(runForecast());
     }
 }
