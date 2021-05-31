@@ -1,11 +1,13 @@
 package com.scripts;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,5 +58,16 @@ public class TiebreakersTest {
         String winner = Tiebreakers.divisionWinner(wins, schedule, "maverick");
         System.out.println(winner);
         assertTrue("Division Winner failed", winner.equals("Pandas"));
+    }
+
+    @Test
+    public void getPlayoffsTest() throws Exception {
+        HashMap<String, Integer> wins = Forecast.getWins("a");
+        List<List<Object>> schedule = Forecast.getSchedule("a");
+        List<List<String>> teams = Tiebreakers.getPlayoffs(wins, schedule, "a");
+        List<String> conf1 = Arrays.asList(new String[] {"Leopards", "Ravens", "Gulls", "Stallions"});
+        List<String> conf2 = Arrays.asList(new String[] {"Eskimos", "Miners", "Tempest", "Titans"});
+        assertEquals(conf1, teams.get(1));
+        assertEquals(conf2, teams.get(0));
     }
 }

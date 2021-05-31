@@ -334,6 +334,7 @@ public class Tiebreakers {
         for (String team : wins.keySet()) {
             if (firstTeam.isEmpty()) {
                 division1.put(team, wins.get(team));
+                firstTeam = team;
                 continue;
             }
             List<String> arrayWithTeams = new ArrayList<String>();
@@ -351,7 +352,7 @@ public class Tiebreakers {
         String winner1 = divisionWinner(division1, schedule, league);
         String winner2 = divisionWinner(division2, schedule, league);
         if (wins.get(winner1).equals(wins.get(winner2))) {
-            String firstSeed = twoTeamsDifferentDivisions(Arrays.asList(new String[] { winner1, winner2}), schedule, league);
+            String firstSeed = twoTeamsDifferentDivisions(Arrays.asList(new String[] {winner1, winner2}), schedule, league);
             String secondSeed = (firstSeed.equals(winner1)) ? winner2 : winner1;
             teamsInOrder.add(firstSeed);
             teamsInOrder.add(secondSeed);
@@ -415,6 +416,7 @@ public class Tiebreakers {
         for (String team : wins.keySet()) {
             if (firstTeam.isEmpty()) {
                 conference1.put(team, wins.get(team));
+                firstTeam = team;
                 continue;
             }
             List<String> arrayWithTeams = new ArrayList<String>();

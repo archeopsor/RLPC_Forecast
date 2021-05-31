@@ -15,7 +15,7 @@ public class Forecast {
     private static final String powerRankingsSheetId = "1Tlc_TgGMrY5aClFF-Pb5xvtKrJ1Hn2PJOLy2fUDDdFI";
     private static final String forecastSheetId = "1GEFufHK5xt0WqThYC7xaK2gz3cwjinO43KOsb7HogQQ";
 
-    private static HashMap<String, Integer> getWins(String league) throws IOException, GeneralSecurityException {
+    public static HashMap<String, Integer> getWins(String league) throws IOException, GeneralSecurityException {
         final String teamWinsRange = Utils.teamWinRanges(league);
         List<List<Object>> wins = SheetsHandler.getValues(powerRankingsSheetId, teamWinsRange);
         HashMap<String, Integer> winsMap = new HashMap<String, Integer>();
@@ -27,7 +27,7 @@ public class Forecast {
         return winsMap;
     }
 
-    private static List<List<Object>> getSchedule(String league) throws IOException, GeneralSecurityException {
+    public static List<List<Object>> getSchedule(String league) throws IOException, GeneralSecurityException {
         final String range = league + " Schedule!N4:V";
         List<String> p4Leagues = Arrays.asList(new String[] { "major", "aaa", "aa", "a" });
         List<String> indyLeagues = Arrays.asList(new String[] { "independent", "maverick", "renegade", "paladin" });
@@ -82,7 +82,7 @@ public class Forecast {
     }
 
     private static void simulateSeason(String league, List<List<Object>> schedule, HashMap<String, Integer> wins,
-            HashMap<String, Integer> ratings) throws IOException {
+            HashMap<String, Integer> ratings) throws Exception {
 
         // Get a copy of the schedule for use in tiebreakers
         // Both played and unplayed games will be added to this list
@@ -133,11 +133,62 @@ public class Forecast {
         }
 
         // Get playoff teams
+        List<List<String>> playoffTeams = Tiebreakers.getPlayoffs(wins, schedule, league);
 
-        System.out.println(wins);
+        // Lists for each stage
+        List<List<String>> quarterfinalGames = new ArrayList<List<String>>();
+        List<List<String>> semifinalGames = new ArrayList<List<String>>();
+
+        List<String> quarterfinalTeams = new ArrayList<String>();
+        List<String> semifinalTeams = new ArrayList<String>();
+        List<String> finalTeams = new ArrayList<String>();
+        String winner = new String();
+
+
+        // Play quarterfinals
+        quarterfinalGames.add(Arrays.asList(new String[] {playoffTeams.get(0).get(0), playoffTeams.get(0).get(3)})); // First conference, 1 vs. 4 seed
+        quarterfinalGames.add(Arrays.asList(new String[] {playoffTeams.get(0).get(1), playoffTeams.get(0).get(2)})); // First conference, 2 vs. 3 seed
+        quarterfinalGames.add(Arrays.asList(new String[] {playoffTeams.get(1).get(0), playoffTeams.get(1).get(3)})); // Second conference, 1 vs. 4 seed
+        quarterfinalGames.add(Arrays.asList(new String[] {playoffTeams.get(1).get(1), playoffTeams.get(1).get(2)})); // Second conference, 2 vs. 3 seed
+        for (List<String> game : quarterfinalGames) {
+            String team1 = game.get(0);
+            String team2 = game.get(1);
+            Integer rating1 = ratings.get(team1);
+            Integer rating2 = ratings.get(team2);
+            quarterfinalTeams.add(team1);
+            quarterfinalTeams.add(team2);
+            List<Object> gameResult = playGame(team1, team2, rating1, rating2, true);
+            semifinalTeams.add(gameResult.get(0).toString());
+        }
+
+        // Play semifinals
+        semifinalGames.add(Arrays.asList(new String[] {semifinalTeams.get(0), semifinalTeams.get(1)})); // First conference championship
+        semifinalGames.add(Arrays.asList(new String[] {semifinalTeams.get(2), semifinalTeams.get(3)})); // Second conference championship
+        for (List<String> game : semifinalGames) {
+            String team1 = game.get(0);
+            String team2 = game.get(1);
+            Integer rating1 = ratings.get(team1);
+            Integer rating2 = ratings.get(team2);
+            List<Object> gameResult = playGame(team1, team2, rating1, rating2, true);
+            finalTeams.add(gameResult.get(0).toString());
+        }
+
+        // Play finals
+        String team1 = finalTeams.get(0);
+        String team2 = finalTeams.get(1);
+        List<Object> finalGameResult = playGame(team1, team2, ratings.get(team1), ratings.get(team2), true);
+        winner = finalGameResult.get(0).toString();
+
+        List<Object> toReturn = new ArrayList<Object>();
+        toReturn.add(winner);
+        toReturn.add(finalTeams);
+        toReturn.add(semifinalTeams);
+        toReturn.add(quarterfinalTeams);
+        toReturn.add(wins);
+        return toReturn;
     }
 
-    public static void runForecast(String[] args) throws IOException, GeneralSecurityException, SQLException {
+    public static void runForecast(String[] args) throws Exception {
         // Arguments
         String league = "major";
         Integer num_times = 10000;
