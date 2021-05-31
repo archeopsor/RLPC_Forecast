@@ -3,6 +3,7 @@ package com.scripts;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -81,10 +82,10 @@ public class Utils {
     }
 
     public static boolean inSameDivision(List<String> teams, String league) {
-        List<Integer> divisions = new ArrayList<Integer>();
+        HashSet<Integer> divisions = new HashSet<Integer>();
         String[] teamsList = teams(league);
         for (String team : teams) {
-            int index = Arrays.binarySearch(teamsList, team);
+            int index = Arrays.asList(teamsList).indexOf(team);
             divisions.add(Math.floorDiv(index, 4));
         }
         if (divisions.size() == 1) {
@@ -95,10 +96,10 @@ public class Utils {
     }
 
     public static boolean inSameConference(List<String> teams, String league) {
-        List<Integer> divisions = new ArrayList<Integer>();
+        HashSet<Integer> divisions = new HashSet<Integer>();
         String[] teamsList = teams(league);
         for (String team : teams) {
-            int index = Arrays.binarySearch(teamsList, team);
+            int index = Arrays.asList(teamsList).indexOf(team);
             divisions.add(Math.floorDiv(index, 8));
         }
         if (divisions.size() == 1) {
@@ -123,6 +124,7 @@ public class Utils {
             }
         }
         if (teamsInDivision.size() != 4) {
+            System.out.println(teamsInDivision);
             throw new Exception("Got an invalid number of teams in division");
         } else {
             return teamsInDivision;
@@ -144,6 +146,7 @@ public class Utils {
             }
         }
         if (teamsInConference.size() != 8) {
+            System.out.println(teamsInConference);
             throw new Exception("Got an invalid number of teams in conference");
         } else {
             return teamsInConference;
