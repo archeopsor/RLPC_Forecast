@@ -2,6 +2,7 @@ package com.scripts;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -151,5 +152,23 @@ public class Utils {
         } else {
             return teamsInConference;
         }
+    }
+
+    public static List<Integer> twoMaxNumbers(Collection<Integer> nums){
+        int maxOne = 0;
+        int maxTwo = 0;
+        for(Integer n:nums){
+            if(maxOne < n){
+                maxTwo = maxOne;
+                maxOne =n;
+            } else if(maxTwo < n){
+                maxTwo = n;
+            }
+        }
+
+        List<Integer> result = new ArrayList<Integer>();
+        result.add(maxOne);
+        result.add(maxTwo);
+        return result;
     }
 }

@@ -176,7 +176,7 @@ public class Forecast {
     }
 
     public static void main(String[] args) throws IOException, GeneralSecurityException, SQLException {
-        System.out.println(getSchedule("a"));
-        // simulateSeason("major", getSchedule("major"), getWins("major"), Database.getElo());
+        //simulateSeason("major", getSchedule("major"), getWins("major"), Database.getElo());
+        System.out.println(getWins("major"));
     }
 }
