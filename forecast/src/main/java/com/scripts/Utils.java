@@ -58,7 +58,7 @@ public class Utils {
             }
         }
 
-    public static Object getRandomElement(List<Object> list, List<Float> probabilities) {
+    public static Object getRandomElement(List<Object> list, List<Float> probabilities) throws Exception {
         Random random = new Random();
         final float r = (float) random.nextDouble();
         float sum = (float) 0.0;
@@ -67,10 +67,11 @@ public class Utils {
             if (r > sum && r < (sum+i)) {
                 return list.get(index);
             } else {
+                sum += i;
                 index++;
             }
         }
-        return getRandomElement(list, probabilities);
+        throw new Exception("getRandomElement failed");
     }
 
     public static int randBetween(int min, int max) {

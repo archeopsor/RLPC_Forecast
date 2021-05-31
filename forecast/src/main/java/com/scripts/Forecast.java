@@ -44,7 +44,7 @@ public class Forecast {
     }
 
     private static List<Object> playGame(String team1, String team2, Integer rating1, Integer rating2, boolean playoffs)
-            throws IOException {
+            throws Exception {
         Integer Q1 = (int) Math.pow(10.0, ((double) rating1 / 250.0));
         Integer Q2 = (int) Math.pow(10.0, ((double) rating2 / 250.0));
         float team1WinProbability = (float) Q1 / (float) (Q1 + Q2);
@@ -133,7 +133,7 @@ public class Forecast {
         }
 
         // Get playoff teams
-        List<List<String>> playoffTeams = Tiebreakers.getPlayoffs(wins, schedule, league);
+        List<List<String>> playoffTeams = Tiebreakers.getPlayoffs(wins, tiebreakSchedule, league);
 
         // Lists for each stage
         List<List<String>> quarterfinalGames = new ArrayList<List<String>>();
@@ -226,8 +226,15 @@ public class Forecast {
         }
     }
 
-    public static void main(String[] args) throws IOException, GeneralSecurityException, SQLException {
-        //simulateSeason("major", getSchedule("major"), getWins("major"), Database.getElo());
-        System.out.println(getWins("major"));
+    public static void main(String[] args) throws Exception {
+        List<List<Object>> schedule = getSchedule("major");
+        HashMap<String, Integer> wins = getWins("major");
+        HashMap<String, Integer> ratings = Database.getElo();
+
+        for (int i = 0; i < 1000; i++){
+            HashMap<String, Integer> ratingsCopy = new HashMap<String, Integer>(ratings);
+            HashMap<String, Integer> winsCopy = new HashMap<String, Integer>(wins);
+            System.out.println(simulateSeason("major", schedule, winsCopy, ratingsCopy));
+        }
     }
 }

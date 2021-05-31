@@ -41,7 +41,11 @@ public class Tiebreakers {
 
         // Get conference and division record
         List<Integer> conferenceWins = new ArrayList<Integer>(); // Size 2
+        conferenceWins.add(0);
+        conferenceWins.add(0);
         List<Integer> divisionWins = new ArrayList<Integer>(); // Size 2
+        divisionWins.add(0);
+        divisionWins.add(0);
         List<String> divisionTeams = Utils.getDivisionTeams(team1, league);
         List<String> conferenceTeams = Utils.getConferenceTeams(team1, league);
         for (List<Object> game : schedule) {
@@ -119,7 +123,7 @@ public class Tiebreakers {
         Integer maxWins = Collections.max(headToHeadSeriesWins.values());
         List<String> toRemove = new ArrayList<String>();
         for (String team : teams) {
-            if (!headToHeadSeriesWins.get(team).equals(maxWins)) {
+            if (!headToHeadSeriesWins.getOrDefault(team, 0).equals(maxWins)) {
                 toRemove.add(team);
             }
         }
@@ -133,8 +137,8 @@ public class Tiebreakers {
         // See if either team lost more head-to-head games
         HashMap<String, Double> winPercentages = new HashMap<String, Double>();
         for (String team : teams) {
-            Integer teamWins = headToHeadGamesWins.get(team);
-            Integer teamGames = teamWins + headToHeadGamesLosses.get(team);
+            Integer teamWins = headToHeadGamesWins.getOrDefault(team, 0);
+            Integer teamGames = teamWins + headToHeadGamesLosses.getOrDefault(team, 0);
             Double winPercentage = (double) (teamWins / teamGames);
             winPercentages.put(team, winPercentage);
         }
@@ -224,7 +228,7 @@ public class Tiebreakers {
         }
 
         // See if one team won both head-to-head series
-        if (headToHeadSeriesWinners.get(0).equals(headToHeadSeriesWinners.get(1))) {
+        if (teams.contains(headToHeadSeriesWinners.get(0))) {
             return headToHeadSeriesWinners.get(0);
         }
 
@@ -237,6 +241,8 @@ public class Tiebreakers {
 
         // Get conference and division record
         List<Integer> conferenceWins = new ArrayList<Integer>(); // Size 2
+        conferenceWins.add(0);
+        conferenceWins.add(0);
         List<String> conferenceTeams = Utils.getConferenceTeams(team1, league);
         for (List<Object> game : schedule) {
             // Get team 1 wins
@@ -293,7 +299,7 @@ public class Tiebreakers {
         teams.removeAll(toRemove);
         if (teams.size() == 1) {
             return teams.get(0);
-        } else if (teams.size() == 2) {
+        } else if (teams.size() == 2 && Utils.inSameDivision(teams, league)) {
             return twoTeamsDifferentDivisions(teams, schedule, league);
         }
 
@@ -428,7 +434,6 @@ public class Tiebreakers {
                 conference2.put(team, wins.get(team));
             }
         }
-
         playoffTeams.add(conferencePlayoffs(conference1, schedule, league));
         playoffTeams.add(conferencePlayoffs(conference2, schedule, league));
 
