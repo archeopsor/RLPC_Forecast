@@ -397,7 +397,7 @@ public class Tiebreakers {
         return teamsInOrder;
     }
 
-    public static void getPlayoffs(HashMap<String, Integer> wins, List<List<Object>> schedule, String league) throws Exception {
+    public static List<List<String>> getPlayoffs(HashMap<String, Integer> wins, List<List<Object>> schedule, String league) throws Exception {
         // Get rid of preseason games in schedule
         for (int i = 0; i < schedule.size(); i++) {
             if (schedule.get(i).get(5).toString().equals("PRESEASON")) {
