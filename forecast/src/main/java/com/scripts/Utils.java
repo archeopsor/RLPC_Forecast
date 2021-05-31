@@ -64,7 +64,7 @@ public class Utils {
         float sum = (float) 0.0;
         int index = 0;
         for (float i : probabilities) {
-            if (r > sum && r < (sum+i)) {
+            if (r >= sum && r <= (sum+i)) {
                 return list.get(index);
             } else {
                 sum += i;

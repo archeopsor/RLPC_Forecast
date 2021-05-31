@@ -192,7 +192,7 @@ public class Forecast {
     public static List<HashMap<String, Float>> runForecast() throws SQLException, Exception {
         // Arguments
         String league = "major";
-        Integer num_times = 10000;
+        int num_times = 100000;
         boolean official = false;
         boolean image = false;
 
@@ -218,7 +218,7 @@ public class Forecast {
 
         HashMap<String, Float> predictedRecords = new HashMap<String, Float>();
         for (String team : wins.keySet()) {
-            predictedRecords.put(team, (float) 0);
+            predictedRecords.put(team, 0.0f);
         }
 
         // Begin simulating seasons
@@ -243,18 +243,18 @@ public class Forecast {
         // Calculate results
         for (String team : wins.keySet()) {
             Integer playoffFrequency = Collections.frequency(playoffTeams, team);
-            playoffProbabilities.put(team, (float) (playoffFrequency / num_times));
+            playoffProbabilities.put(team, (float) (playoffFrequency / (float) num_times));
 
             Integer semiFrequency = Collections.frequency(semiTeams, team);
-            semiProbabilities.put(team, (float) (semiFrequency / num_times));
+            semiProbabilities.put(team, (float) (semiFrequency / (float) num_times));
 
             Integer finalFrequency = Collections.frequency(finalTeams, team);
-            finalProbabilities.put(team, (float) (finalFrequency / num_times));
+            finalProbabilities.put(team, (float) (finalFrequency / (float) num_times));
 
             Integer champFrequency = Collections.frequency(champTeams, team); 
-            champProbabilities.put(team, (float) (champFrequency / num_times));
+            champProbabilities.put(team, (float) (champFrequency / (float) num_times));
 
-            predictedRecords.put(team, predictedRecords.get(team) / num_times);
+            predictedRecords.put(team, predictedRecords.get(team) / (float) num_times);
         }
 
         List<HashMap<String, Float>> toReturn = new ArrayList<HashMap<String, Float>>();

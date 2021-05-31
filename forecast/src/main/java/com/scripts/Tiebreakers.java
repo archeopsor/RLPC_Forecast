@@ -292,7 +292,7 @@ public class Tiebreakers {
         Integer maxConferenceWins = Collections.max(conferenceWins.values());
         List<String> toRemove = new ArrayList<String>();
         for (String team : teams) {
-            if (!conferenceWins.get(team).equals(maxConferenceWins)) {
+            if (!conferenceWins.getOrDefault(team, 0).equals(maxConferenceWins)) {
                 toRemove.add(team);
             }
         }
