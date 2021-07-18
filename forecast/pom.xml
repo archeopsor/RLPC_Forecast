@@ -43,6 +43,10 @@
       <artifactId>postgresql</artifactId>
       <version>42.2.20</version>
     </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver-sync</artifactId>
+      <version>4.3.0</version> </dependency>
   </dependencies>
 
   <build>

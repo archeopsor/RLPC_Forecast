@@ -110,3 +110,5 @@ nb-configuration.xml
 ##############################
 creds.json
 StoredCredential
+secrets.txt
+mongo_uri.txt

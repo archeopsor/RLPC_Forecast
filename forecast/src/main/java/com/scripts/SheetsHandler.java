@@ -107,8 +107,9 @@ public class SheetsHandler {
     public static AppendValuesResponse append(String spreadsheetId, String range, List<List<Object>> values)
             throws IOException, GeneralSecurityException {
         Sheets service = getService();
+        
         ValueRange body = new ValueRange().setValues(values);
-        AppendValuesResponse response = service.spreadsheets().values().append(spreadsheetId, range, body).execute();
+        AppendValuesResponse response = service.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED").execute();
         return response;
     }
 

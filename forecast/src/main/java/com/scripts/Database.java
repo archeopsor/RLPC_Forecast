@@ -6,12 +6,27 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import java.io.*;
+
 public class Database {
-    private static final String url = "jdbc:postgresql://ec2-3-234-169-147.compute-1.amazonaws.com:5432/ddm7aht2msunmo";
-    private static final String user = "mpjpvpnvghfyjz";
-    private static final String password = "e2f8b17dfbde75d865d9838a210db952cb19d2c4f1fb6f946ea1e3e8178bbe0a";
+
+    private static ArrayList<String> get_creds() throws IOException {
+        File tokens = new File("/secrets.txt") ;
+        BufferedReader br = new BufferedReader(new FileReader(tokens));
+        final String url = br.readLine();
+        final String user = br.readLine();
+        final String password = br.readLine();
+        br.close();
+        ArrayList<String> creds = new ArrayList<String>();
+        creds.add(url);
+        creds.add(user);
+        creds.add(password);
+
+        return creds;
+    }
 
     /**
      * Connect to the PostgreSQL database
@@ -20,8 +35,14 @@ public class Database {
      */
     public static Connection connect() {
         Connection conn = null;
+        ArrayList<String> creds = null;
         try {
-            conn = DriverManager.getConnection(url, user, password);
+            creds = get_creds();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            conn = DriverManager.getConnection(creds.get(0), creds.get(1), creds.get(2));
 
             if (conn == null) {
                 System.out.println("Failed to connect to the database.");

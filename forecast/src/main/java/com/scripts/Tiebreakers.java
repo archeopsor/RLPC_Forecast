@@ -16,14 +16,14 @@ public class Tiebreakers {
         List<String> headToHeadSeriesWinners = new ArrayList<String>(); // Should have size 2 at the end
         HashMap<String, Integer> headToHeadGamesLosses = new HashMap<String, Integer>(); // Should end with size 2
         for (List<Object> game : schedule) {
-            if (game.get(2).toString().equals(team1) && game.get(4).toString().equals(team2)) {
+            if (game.get(3).toString().equals(team1) && game.get(5).toString().equals(team2)) {
                 headToHeadSeriesWinners.add(game.get(5).toString());
-                Integer losses = Integer.parseInt(game.get(6).toString().split(" - ")[1]);
+                Integer losses = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
                 headToHeadGamesLosses.put(game.get(5).toString(), losses + 3);
-            } else if (game.get(2).toString().equals(team2) && game.get(4).toString().equals(team1)) {
-                headToHeadSeriesWinners.add(game.get(5).toString());
-                Integer losses = Integer.parseInt(game.get(6).toString().split(" - ")[1]);
-                headToHeadGamesLosses.put(game.get(5).toString(), losses + 3);
+            } else if (game.get(3).toString().equals(team2) && game.get(5).toString().equals(team1)) {
+                headToHeadSeriesWinners.add(game.get(6).toString());
+                Integer losses = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
+                headToHeadGamesLosses.put(game.get(6).toString(), losses + 3);
             }
         }
 
@@ -50,31 +50,31 @@ public class Tiebreakers {
         List<String> conferenceTeams = Utils.getConferenceTeams(team1, league);
         for (List<Object> game : schedule) {
             // Get team 1 wins
-            if (game.get(2).toString().equals(team1) && conferenceTeams.contains(game.get(4).toString())
-                    && game.get(5).toString().equals(team1)) {
+            if (game.get(3).toString().equals(team1) && conferenceTeams.contains(game.get(5).toString())
+                    && game.get(6).toString().equals(team1)) {
                 conferenceWins.set(0, conferenceWins.get(0) + 1);
-                if (divisionTeams.contains(game.get(4).toString())) {
+                if (divisionTeams.contains(game.get(5).toString())) {
                     divisionWins.set(0, divisionWins.get(0) + 1);
                 }
-            } else if (game.get(4).toString().equals(team1) && conferenceTeams.contains(game.get(2).toString())
-                    && game.get(5).toString().equals(team1)) {
+            } else if (game.get(5).toString().equals(team1) && conferenceTeams.contains(game.get(3).toString())
+                    && game.get(6).toString().equals(team1)) {
                 conferenceWins.set(0, conferenceWins.get(0) + 1);
-                if (divisionTeams.contains(game.get(2).toString())) {
+                if (divisionTeams.contains(game.get(3).toString())) {
                     divisionWins.set(0, divisionWins.get(0) + 1);
                 }
             }
 
             // Get team 2 wins
-            if (game.get(2).toString().equals(team2) && conferenceTeams.contains(game.get(4).toString())
-                    && game.get(5).toString().equals(team2)) {
+            if (game.get(3).toString().equals(team2) && conferenceTeams.contains(game.get(5).toString())
+                    && game.get(6).toString().equals(team2)) {
                 conferenceWins.set(1, conferenceWins.get(1) + 1);
-                if (divisionTeams.contains(game.get(4).toString())) {
+                if (divisionTeams.contains(game.get(5).toString())) {
                     divisionWins.set(1, divisionWins.get(1) + 1);
                 }
-            } else if (game.get(4).toString().equals(team2) && conferenceTeams.contains(game.get(2).toString())
-                    && game.get(5).toString().equals(team2)) {
+            } else if (game.get(5).toString().equals(team2) && conferenceTeams.contains(game.get(3).toString())
+                    && game.get(6).toString().equals(team2)) {
                 conferenceWins.set(1, conferenceWins.get(1) + 1);
-                if (divisionTeams.contains(game.get(2).toString())) {
+                if (divisionTeams.contains(game.get(3).toString())) {
                     divisionWins.set(1, divisionWins.get(1) + 1);
                 }
             }
@@ -105,15 +105,20 @@ public class Tiebreakers {
         HashMap<String, Integer> headToHeadGamesWins = new HashMap<String, Integer>();
         HashMap<String, Integer> headToHeadGamesLosses = new HashMap<String, Integer>();
         for (List<Object> game : schedule) {
-            if (teams.contains(game.get(2).toString()) && teams.contains(game.get(4).toString())) {
+            if (teams.contains(game.get(3).toString()) && teams.contains(game.get(5).toString())) {
                 // Update maps with wins and losses
-                Integer existingSeriesWins = headToHeadSeriesWins.getOrDefault(game.get(5).toString(), 0);
-                headToHeadSeriesWins.put(game.get(5).toString(), existingSeriesWins + 1);
-                Integer existingGameWins = headToHeadGamesWins.getOrDefault(game.get(5).toString(), 0);
-                headToHeadGamesWins.put(game.get(5).toString(), existingGameWins + 3);
-                String loser = (game.get(2).toString().equals(game.get(5).toString())) ? game.get(2).toString()
-                        : game.get(4).toString();
-                Integer lostGames = Integer.parseInt(game.get(6).toString().split(" - ")[1]);
+                Integer existingSeriesWins = headToHeadSeriesWins.getOrDefault(game.get(6).toString(), 0);
+                headToHeadSeriesWins.put(game.get(6).toString(), existingSeriesWins + 1);
+                Integer existingGameWins = headToHeadGamesWins.getOrDefault(game.get(6).toString(), 0);
+                headToHeadGamesWins.put(game.get(6).toString(), existingGameWins + 3);
+                String loser = (game.get(3).toString().equals(game.get(6).toString())) ? game.get(3).toString()
+                        : game.get(5).toString();
+                Integer lostGames;
+                try {
+                    lostGames = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    lostGames = 3;
+                }
                 Integer existingGameLosses = headToHeadGamesLosses.getOrDefault(loser, 0);
                 headToHeadGamesLosses.put(loser, existingGameLosses + lostGames);
             }
@@ -162,13 +167,13 @@ public class Tiebreakers {
         List<String> divisionTeams = Utils.getDivisionTeams(teams.get(0), league);
         List<String> conferenceTeams = Utils.getConferenceTeams(teams.get(0), league);
         for (List<Object> game : schedule) {
-            if (conferenceTeams.contains(game.get(2).toString()) && conferenceTeams.contains(game.get(4).toString())
-                    && teams.contains(game.get(5).toString())) {
-                Integer existingConferenceWins = conferenceWins.getOrDefault(game.get(5).toString(), 0);
-                conferenceWins.put(game.get(5).toString(), existingConferenceWins + 1);
-                if (divisionTeams.contains(game.get(2).toString()) && divisionTeams.contains(game.get(4).toString())) {
-                    Integer existingDivisionWins = divisionWins.getOrDefault(game.get(5).toString(), 0);
-                    divisionWins.put(game.get(5).toString(), existingDivisionWins + 1);
+            if (conferenceTeams.contains(game.get(3).toString()) && conferenceTeams.contains(game.get(5).toString())
+                    && teams.contains(game.get(6).toString())) {
+                Integer existingConferenceWins = conferenceWins.getOrDefault(game.get(6).toString(), 0);
+                conferenceWins.put(game.get(6).toString(), existingConferenceWins + 1);
+                if (divisionTeams.contains(game.get(3).toString()) && divisionTeams.contains(game.get(5).toString())) {
+                    Integer existingDivisionWins = divisionWins.getOrDefault(game.get(6).toString(), 0);
+                    divisionWins.put(game.get(6).toString(), existingDivisionWins + 1);
                 }
             }
         }
@@ -216,14 +221,14 @@ public class Tiebreakers {
         List<String> headToHeadSeriesWinners = new ArrayList<String>(); // Should have size 2 at the end
         HashMap<String, Integer> headToHeadGamesLosses = new HashMap<String, Integer>(); // Should end with size 2
         for (List<Object> game : schedule) {
-            if (game.get(2).toString().equals(team1) && game.get(4).toString().equals(team2)) {
-                headToHeadSeriesWinners.add(game.get(5).toString());
-                Integer losses = Integer.parseInt(game.get(6).toString().split(" - ")[1]);
-                headToHeadGamesLosses.put(game.get(5).toString(), losses + 3);
-            } else if (game.get(2).toString().equals(team2) && game.get(4).toString().equals(team1)) {
-                headToHeadSeriesWinners.add(game.get(5).toString());
-                Integer losses = Integer.parseInt(game.get(6).toString().split(" - ")[1]);
-                headToHeadGamesLosses.put(game.get(5).toString(), losses + 3);
+            if (game.get(3).toString().equals(team1) && game.get(5).toString().equals(team2)) {
+                headToHeadSeriesWinners.add(game.get(6).toString());
+                Integer losses = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
+                headToHeadGamesLosses.put(game.get(6).toString(), losses + 3);
+            } else if (game.get(3).toString().equals(team2) && game.get(5).toString().equals(team1)) {
+                headToHeadSeriesWinners.add(game.get(6).toString());
+                Integer losses = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
+                headToHeadGamesLosses.put(game.get(6).toString(), losses + 3);
             }
         }
 
@@ -246,20 +251,20 @@ public class Tiebreakers {
         List<String> conferenceTeams = Utils.getConferenceTeams(team1, league);
         for (List<Object> game : schedule) {
             // Get team 1 wins
-            if (game.get(2).toString().equals(team1) && conferenceTeams.contains(game.get(4).toString())
-                    && game.get(5).toString().equals(team1)) {
+            if (game.get(3).toString().equals(team1) && conferenceTeams.contains(game.get(5).toString())
+                    && game.get(6).toString().equals(team1)) {
                 conferenceWins.set(0, conferenceWins.get(0) + 1);
-            } else if (game.get(4).toString().equals(team1) && conferenceTeams.contains(game.get(2).toString())
-                    && game.get(5).toString().equals(team1)) {
+            } else if (game.get(5).toString().equals(team1) && conferenceTeams.contains(game.get(3).toString())
+                    && game.get(6).toString().equals(team1)) {
                 conferenceWins.set(0, conferenceWins.get(0) + 1);
             }
 
             // Get team 2 wins
-            if (game.get(2).toString().equals(team2) && conferenceTeams.contains(game.get(4).toString())
-                    && game.get(5).toString().equals(team2)) {
+            if (game.get(3).toString().equals(team2) && conferenceTeams.contains(game.get(5).toString())
+                    && game.get(6).toString().equals(team2)) {
                 conferenceWins.set(1, conferenceWins.get(1) + 1);
-            } else if (game.get(4).toString().equals(team2) && conferenceTeams.contains(game.get(2).toString())
-                    && game.get(5).toString().equals(team2)) {
+            } else if (game.get(5).toString().equals(team2) && conferenceTeams.contains(game.get(3).toString())
+                    && game.get(6).toString().equals(team2)) {
                 conferenceWins.set(1, conferenceWins.get(1) + 1);
             }
         }
@@ -281,10 +286,10 @@ public class Tiebreakers {
         HashMap<String, Integer> conferenceWins = new HashMap<String, Integer>();
         List<String> conferenceTeams = Utils.getConferenceTeams(teams.get(0), league);
         for (List<Object> game : schedule) {
-            if (conferenceTeams.contains(game.get(2).toString()) && conferenceTeams.contains(game.get(4).toString())
-                    && teams.contains(game.get(5).toString())) {
-                Integer existingConferenceWins = conferenceWins.getOrDefault(game.get(5).toString(), 0);
-                conferenceWins.put(game.get(5).toString(), existingConferenceWins + 1);
+            if (conferenceTeams.contains(game.get(3).toString()) && conferenceTeams.contains(game.get(5).toString())
+                    && teams.contains(game.get(6).toString())) {
+                Integer existingConferenceWins = conferenceWins.getOrDefault(game.get(6).toString(), 0);
+                conferenceWins.put(game.get(6).toString(), existingConferenceWins + 1);
             }
         }
 
@@ -407,7 +412,7 @@ public class Tiebreakers {
     public static List<List<String>> getPlayoffs(HashMap<String, Integer> wins, List<List<Object>> schedule, String league) throws Exception {
         // Get rid of preseason games in schedule
         for (int i = 0; i < schedule.size(); i++) {
-            if (schedule.get(i).get(5).toString().equals("PRESEASON")) {
+            if (schedule.get(i).get(1).toString().equals("Y")) { // Preseason games
                 schedule.remove(i);
                 i--;
             }

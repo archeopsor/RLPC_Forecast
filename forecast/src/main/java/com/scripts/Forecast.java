@@ -11,8 +11,8 @@ import java.util.List;
 
 public class Forecast {
 
-    private static final String p4SheetId = "1AJoBYkYGMIrpe8HkkJcB25DbLP2Z-eV7P6Tk9R6265I";
-    private static final String indySheetId = "1bWvgo_YluMbpQPheldQQZdASKGHRPIUVfYL2r2KSdaE";
+    private static final String p4SheetId = "17tPXpZACXlqrCS3gYo59C5gbZyp3oguVdjwsgWQJkcA";
+    private static final String indySheetId = "1Ef08kD375wbs5VHm_EFQw3C6k4dt7Aw69wyDfVKGVHc";
     private static final String powerRankingsSheetId = "1Tlc_TgGMrY5aClFF-Pb5xvtKrJ1Hn2PJOLy2fUDDdFI";
     private static final String forecastSheetId = "1GEFufHK5xt0WqThYC7xaK2gz3cwjinO43KOsb7HogQQ";
 
@@ -29,7 +29,7 @@ public class Forecast {
     }
 
     public static List<List<Object>> getSchedule(String league) throws IOException, GeneralSecurityException {
-        final String range = league + " Schedule!N4:V";
+        final String range = league + " Schedule!O4:V";
         List<String> p4Leagues = Arrays.asList(new String[] { "major", "aaa", "aa", "a" });
         List<String> indyLeagues = Arrays.asList(new String[] { "independent", "maverick", "renegade", "paladin" });
         List<List<Object>> schedule;
@@ -90,19 +90,21 @@ public class Forecast {
         List<List<Object>> tiebreakSchedule = new ArrayList<List<Object>>();
 
         for (int i = 0; i < schedule.size(); i++) {
-            if (schedule.get(i).get(5).toString().length() > 0) {
+            if (schedule.get(i).size() == 6) { // If there's no winner
+                continue;
+            } else if (schedule.get(i).get(6).toString().length() > 0) {  // If there's already a winner, meaning game has already been played
                 List<Object> toRemove = schedule.remove(i);
                 tiebreakSchedule.add(toRemove);
                 i--;
-            } else if (schedule.get(i).get(1).toString().equals("Y")) {
+            } else if (schedule.get(i).get(1).toString().equals("Y")) {     // Preseason games
                 schedule.remove(i);
                 i--;
             }
         }
 
         for (List<Object> game : schedule) {
-            String team1 = game.get(2).toString();
-            String team2 = game.get(4).toString();
+            String team1 = game.get(3).toString();
+            String team2 = game.get(5).toString();
             Integer rating1 = ratings.get(team1);
             Integer rating2 = ratings.get(team2);
 
@@ -111,15 +113,14 @@ public class Forecast {
 
             // Add result to the tiebreakSchedule
             List<Object> gameResult = new ArrayList<Object>();
-            gameResult.add(game.get(0));
-            gameResult.add(game.get(1));
-            gameResult.add(game.get(2));
-            gameResult.add(game.get(3));
-            gameResult.add(game.get(4));
-            gameResult.add(result.get(0).toString());
-            gameResult.add(result.get(4).toString());
-            gameResult.add(game.get(7));
-            gameResult.add(game.get(8));
+            gameResult.add(game.get(0)); // Day
+            gameResult.add(game.get(1)); // Preseason
+            gameResult.add(game.get(2)); // Playoff
+            gameResult.add(game.get(3)); // Team 1
+            gameResult.add(game.get(4)); // vs
+            gameResult.add(game.get(5)); // Team 2
+            gameResult.add(result.get(0).toString()); // Winner
+            gameResult.add(result.get(4).toString()); // Score
             tiebreakSchedule.add(gameResult);
 
             // Add win to winner
@@ -190,11 +191,8 @@ public class Forecast {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<HashMap<String, Float>> runForecast() throws SQLException, Exception {
+    public static List<HashMap<String, Float>> runForecast(String league, int num_times, boolean official) throws SQLException, Exception {
         // Arguments
-        String league = "major";
-        int num_times = 100000;
-        boolean official = false;
         boolean image = false;
 
         // Ensure valid args
@@ -205,7 +203,7 @@ public class Forecast {
         // Useful data
         List<List<Object>> schedule = getSchedule(league);
         HashMap<String, Integer> wins = getWins(league);
-        HashMap<String, Integer> ratings = Database.getElo();
+        HashMap<String, Integer> ratings = mongo.getElo();
 
         // List of teams that make it to each stage
         List<String> playoffTeams = new ArrayList<String>();
@@ -258,6 +256,34 @@ public class Forecast {
             predictedRecords.put(team, predictedRecords.get(team) / (float) num_times);
         }
 
+        if (official) {
+            HashMap<String, Integer> startingRows = new HashMap<String, Integer>();
+            startingRows.put("major", 3);
+            startingRows.put("aaa", 22);
+            startingRows.put("aa", 41);
+            startingRows.put("a", 60);
+            startingRows.put("independent", 79);
+            startingRows.put("maverick", 98);
+            startingRows.put("renegade", 117);
+            startingRows.put("paladin", 136);
+
+            Integer startingRow = startingRows.get(league.toLowerCase());
+            
+            SheetsHandler.clear(forecastSheetId, "Most Recent!B" + startingRow + ":F" + (startingRow + 15));
+            List<List<Object>> teams = SheetsHandler.getValues(forecastSheetId, "Most Recent!A"+startingRow+":A"+(startingRow+15));
+            for (List<Object> teamArray : teams) {
+                String team = teamArray.get(0).toString();
+                teamArray.add(predictedRecords.get(team));
+                teamArray.add(playoffProbabilities.get(team));
+                teamArray.add(semiProbabilities.get(team));
+                teamArray.add(finalProbabilities.get(team));
+                teamArray.add(champProbabilities.get(team));
+                teamArray.remove(0); // Remove team name
+            }
+            SheetsHandler.append(forecastSheetId, "Most Recent!B"+startingRow+":F"+(startingRow + 15), teams);
+
+        }
+
         List<HashMap<String, Float>> toReturn = new ArrayList<HashMap<String, Float>>();
         toReturn.add(predictedRecords);
         toReturn.add(playoffProbabilities);
@@ -268,6 +294,18 @@ public class Forecast {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println(runForecast());
+        // Arguments
+        String league = "major";
+        int num_times = 100000;
+        boolean official = true;
+
+        // System.out.println(runForecast(league, num_times, official));
+
+        //runForecast("major", num_times, official);
+        //runForecast("aaa", num_times, official);
+        runForecast("aa", num_times, official);
+        runForecast("a", num_times, official);
+        runForecast("independent", num_times, official);
+        runForecast("maverick", num_times, official);
     }
 }
