@@ -2,7 +2,6 @@ package com.scripts;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Scanner;
 

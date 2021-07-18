@@ -192,9 +192,7 @@ public class Forecast {
 
     @SuppressWarnings("unchecked")
     public static List<HashMap<String, Float>> runForecast(String league, int num_times, boolean official) throws SQLException, Exception {
-        // Arguments
-        boolean image = false;
-
+        
         // Ensure valid args
         if (!Utils.isValidLeague(league)) {
             throw new IOException("Invalid League: " + league);
@@ -295,14 +293,14 @@ public class Forecast {
 
     public static void main(String[] args) throws Exception {
         // Arguments
-        String league = "major";
+        // String league = "major";
         int num_times = 100000;
         boolean official = true;
 
         // System.out.println(runForecast(league, num_times, official));
 
-        //runForecast("major", num_times, official);
-        //runForecast("aaa", num_times, official);
+        runForecast("major", num_times, official);
+        runForecast("aaa", num_times, official);
         runForecast("aa", num_times, official);
         runForecast("a", num_times, official);
         runForecast("independent", num_times, official);
