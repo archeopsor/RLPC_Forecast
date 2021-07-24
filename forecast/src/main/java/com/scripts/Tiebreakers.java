@@ -17,12 +17,12 @@ public class Tiebreakers {
         HashMap<String, Integer> headToHeadGamesLosses = new HashMap<String, Integer>(); // Should end with size 2
         for (List<Object> game : schedule) {
             if (game.get(3).toString().equals(team1) && game.get(5).toString().equals(team2)) {
-                headToHeadSeriesWinners.add(game.get(5).toString());
-                Integer losses = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
-                headToHeadGamesLosses.put(game.get(5).toString(), losses + 3);
+                headToHeadSeriesWinners.add(game.get(6).toString());
+                Integer losses = game.get(7).equals("FF") ? 3 : Integer.parseInt(game.get(7).toString().split(" - ")[1]);
+                headToHeadGamesLosses.put(game.get(6).toString(), losses + 3);
             } else if (game.get(3).toString().equals(team2) && game.get(5).toString().equals(team1)) {
                 headToHeadSeriesWinners.add(game.get(6).toString());
-                Integer losses = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
+                Integer losses = game.get(7).equals("FF") ? 3 : Integer.parseInt(game.get(7).toString().split(" - ")[1]);
                 headToHeadGamesLosses.put(game.get(6).toString(), losses + 3);
             }
         }
@@ -115,7 +115,7 @@ public class Tiebreakers {
                         : game.get(5).toString();
                 Integer lostGames;
                 try {
-                    lostGames = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
+                    lostGames = game.get(7).equals("FF") ? 3 : Integer.parseInt(game.get(7).toString().split(" - ")[1]);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     lostGames = 3;
                 }
@@ -223,11 +223,11 @@ public class Tiebreakers {
         for (List<Object> game : schedule) {
             if (game.get(3).toString().equals(team1) && game.get(5).toString().equals(team2)) {
                 headToHeadSeriesWinners.add(game.get(6).toString());
-                Integer losses = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
+                Integer losses = game.get(7).equals("FF") ? 3 : Integer.parseInt(game.get(7).toString().split(" - ")[1]);
                 headToHeadGamesLosses.put(game.get(6).toString(), losses + 3);
             } else if (game.get(3).toString().equals(team2) && game.get(5).toString().equals(team1)) {
                 headToHeadSeriesWinners.add(game.get(6).toString());
-                Integer losses = Integer.parseInt(game.get(7).toString().split(" - ")[1]);
+                Integer losses = game.get(7).equals("FF") ? 3 : Integer.parseInt(game.get(7).toString().split(" - ")[1]);
                 headToHeadGamesLosses.put(game.get(6).toString(), losses + 3);
             }
         }

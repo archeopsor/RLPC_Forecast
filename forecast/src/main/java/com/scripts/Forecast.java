@@ -92,14 +92,17 @@ public class Forecast {
         for (int i = 0; i < schedule.size(); i++) {
             if (schedule.get(i).size() == 6) { // If there's no winner
                 continue;
-            } else if (schedule.get(i).get(6).toString().length() > 0) {  // If there's already a winner, meaning game has already been played
-                List<Object> toRemove = schedule.remove(i);
-                tiebreakSchedule.add(toRemove);
+            } else if (schedule.get(i).get(0).equals("Day")) {              // Header
+                schedule.remove(i);
                 i--;
             } else if (schedule.get(i).get(1).toString().equals("Y")) {     // Preseason games
                 schedule.remove(i);
                 i--;
-            }
+            } else if (schedule.get(i).get(6).toString().length() > 0) {    // If there's already a winner, meaning game has already been played
+                List<Object> toRemove = schedule.remove(i);
+                tiebreakSchedule.add(toRemove);
+                i--;
+            } 
         }
 
         for (List<Object> game : schedule) {
@@ -224,7 +227,8 @@ public class Forecast {
             // Make copies of useful data
             HashMap<String, Integer> ratingsCopy = new HashMap<String, Integer>(ratings);
             HashMap<String, Integer> winsCopy = new HashMap<String, Integer>(wins);
-            List<Object> simResult = simulateSeason(league, schedule, winsCopy, ratingsCopy);
+            List<List<Object>> scheduleCopy = new ArrayList<List<Object>>(schedule);
+            List<Object> simResult = simulateSeason(league, scheduleCopy, winsCopy, ratingsCopy);
 
             // Add results to lists
             playoffTeams.addAll((List<String>) simResult.get(3));
