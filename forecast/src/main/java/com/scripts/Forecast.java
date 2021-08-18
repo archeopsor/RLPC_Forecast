@@ -46,8 +46,8 @@ public class Forecast {
 
     private static List<Object> playGame(String team1, String team2, Integer rating1, Integer rating2, boolean playoffs)
             throws Exception {
-        Integer Q1 = (int) Math.pow(10.0, ((double) rating1 / 250.0));
-        Integer Q2 = (int) Math.pow(10.0, ((double) rating2 / 250.0));
+        Integer Q1 = (int) Math.pow(10.0, ((double) rating1 / 200.0));
+        Integer Q2 = (int) Math.pow(10.0, ((double) rating2 / 200.0));
         float team1WinProbability = (float) Q1 / (float) (Q1 + Q2);
         float team2WinProbability = (float) Q2 / (float) (Q1 + Q2);
         int numGames = (playoffs) ? 4 : 3;
