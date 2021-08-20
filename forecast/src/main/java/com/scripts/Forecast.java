@@ -133,8 +133,8 @@ public class Forecast {
             // Change ratings of both teams
             Integer newRating1 = (int) ( (float) rating1 + (Utils.k * Float.parseFloat(result.get(2).toString())) );
             Integer newRating2 = (int) ( (float) rating2 + (Utils.k * Float.parseFloat(result.get(3).toString())) );
-            ratings.put(result.get(0).toString(), newRating1);
-            ratings.put(result.get(1).toString(), newRating2);
+            ratings.put(team1, newRating1);
+            ratings.put(team2, newRating2);
         }
 
         // Get playoff teams
@@ -298,7 +298,7 @@ public class Forecast {
     public static void main(String[] args) throws Exception {
         // Arguments
         // String league = "major";
-        int num_times = 100000;
+        int num_times = 1000000;
         boolean official = true;
 
         // System.out.println(runForecast(league, num_times, official));
