@@ -190,6 +190,7 @@ public class Forecast {
         toReturn.add(semifinalTeams);
         toReturn.add(quarterfinalTeams);
         toReturn.add(wins);
+        toReturn.add(tiebreakSchedule);
         return toReturn;
     }
 
@@ -202,9 +203,11 @@ public class Forecast {
         }
 
         // Useful data
+        DataSheet dataSheet = new DataSheet(league);
         List<List<Object>> schedule = getSchedule(league);
         HashMap<String, Integer> wins = getWins(league);
         HashMap<String, Integer> ratings = mongo.getElo();
+        // ArrayList<List<Object>> sims = new ArrayList<List<Object>>();
 
         // List of teams that make it to each stage
         List<String> playoffTeams = new ArrayList<String>();
@@ -222,8 +225,8 @@ public class Forecast {
         }
 
         // Begin simulating seasons
-        for (Integer i = 0; i < num_times; i++) {
-            System.out.println("Simulation #" + (i+1) + "       " + league);
+        for (Integer i = 1; i <= num_times; i++) {
+            System.out.println("Simulation #" + (i) + "       " + league);
             // Make copies of useful data
             HashMap<String, Integer> ratingsCopy = new HashMap<String, Integer>(ratings);
             HashMap<String, Integer> winsCopy = new HashMap<String, Integer>(wins);
@@ -231,6 +234,7 @@ public class Forecast {
             List<Object> simResult = simulateSeason(league, scheduleCopy, winsCopy, ratingsCopy);
 
             // Add results to lists
+            dataSheet.addSimToCSV(simResult);
             playoffTeams.addAll((List<String>) simResult.get(3));
             semiTeams.addAll((List<String>) simResult.get(2));
             finalTeams.addAll((List<String>) simResult.get(1));
@@ -240,6 +244,13 @@ public class Forecast {
                 predictedRecords.put(team, predictedRecords.get(team) + (float) simWins.get(team));
             }
         }
+
+        // Log data to sheet
+        // dataSheet.addSims(sims);
+        // sims.clear();               // Save a chunk of memory hopefully
+        // dataSheet.save();
+        // dataSheet.simsToCSV(sims);
+        dataSheet.closeCSV();
 
         // Calculate results
         for (String team : wins.keySet()) {

@@ -112,3 +112,9 @@ creds.json
 StoredCredential
 secrets.txt
 mongo_uri.txt
+
+##############################
+## RANDOM
+##############################
+*.csv
+*.xlsx
