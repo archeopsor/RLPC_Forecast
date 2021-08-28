@@ -244,7 +244,7 @@ public class DataSheet {
         headers[146] = "Finals";
         headers[147] = "Champion";
 
-        printer.printRecord((Object) headers);
+        printer.printRecord(headers);
     }
 
     @SuppressWarnings("unchecked")
@@ -277,7 +277,7 @@ public class DataSheet {
         data[146] = String.join(" ", finals);
         data[147] = String.join(" ", champs);
 
-        printer.printRecord((Object) data);
+        printer.printRecord(data);
     }
 
     public void closeCSV() throws IOException {
@@ -332,9 +332,9 @@ public class DataSheet {
         }
 
         
-        printer.printRecord((Object) headers);
+        printer.printRecord(headers);
         for (String[] row : datalines) {
-            printer.printRecord((Object) row);
+            printer.printRecord(row);
         }
     }
 
