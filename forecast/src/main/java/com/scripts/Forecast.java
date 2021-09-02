@@ -309,7 +309,7 @@ public class Forecast {
     public static void main(String[] args) throws Exception {
         // Arguments
         // String league = "major";
-        int num_times = 1000000;
+        int num_times = 1000;
         boolean official = true;
 
         // System.out.println(runForecast(league, num_times, official));

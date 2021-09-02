@@ -170,9 +170,13 @@ public class matchEncoder {
     private static int encodeResult(String result) {
         HashMap<String, Integer> results = new HashMap<String, Integer>();
         results.put("3-0", 0);
+        results.put("3 - 0", 0);
         results.put("3-1", 1);
+        results.put("3 - 1", 1);
         results.put("3-2", 2);
+        results.put("3 - 2", 2);
         results.put("ff", 3);
+        results.put("FF", 3);
 
         return results.get(result);
     }
