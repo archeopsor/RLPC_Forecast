@@ -266,7 +266,8 @@ public class DataSheet {
             String winner = game.get(6);
             String loser = game.get(6).equals(game.get(3)) ? game.get(5) : game.get(3);
             String score = game.get(7);
-            String result = abbreviate(winner) + " " + score + " " + abbreviate(loser);
+            // String result = abbreviate(winner) + " " + score + " " + abbreviate(loser);
+            String result = matchEncoder.encode(this.league, score, winner, loser);
 
             data[i] = result;
         }
