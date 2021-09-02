@@ -25,6 +25,7 @@ public class DataSheet {
     Sheet sheet;
     CSVPrinter printer;
     HashMap<String, String> abbreviations;
+    MatchEncoder encoder;
 
     private HashMap<String, String> createAbbreviations() {
         // For shortening team names
@@ -200,6 +201,8 @@ public class DataSheet {
         this.wb = WorkbookFactory.create(new FileInputStream(path));
         this.sheet = wb.getSheet(league + " Forecast");
         this.abbreviations = createAbbreviations();
+        this.encoder = new MatchEncoder();
+        
     }
 
     public void save() throws IOException {
@@ -267,7 +270,7 @@ public class DataSheet {
             String loser = game.get(6).equals(game.get(3)) ? game.get(5) : game.get(3);
             String score = game.get(7);
             // String result = abbreviate(winner) + " " + score + " " + abbreviate(loser);
-            String result = matchEncoder.encode(this.league, score, winner, loser);
+            String result = encoder.encode(this.league, score, winner, loser);
 
             data[i] = result;
         }

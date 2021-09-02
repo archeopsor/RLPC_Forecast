@@ -1,10 +1,17 @@
 package com.scripts;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
-public class matchEncoder {
-    private static int encodeLeague(String league) {
-        HashMap<String, Integer> leagues = new HashMap<String, Integer>();
+public class MatchEncoder {
+    static HashMap<String, Integer> leagues;
+    static HashMap<String, Integer> teams;
+    static HashMap<String, Integer> results;
+    static HashMap<List<String>, String> cache = new HashMap<List<String>, String>();
+
+    static {
+        leagues = new HashMap<String, Integer>();
         leagues.put("major", 0);
         leagues.put("aaa", 1);
         leagues.put("aa", 2);
@@ -14,11 +21,7 @@ public class matchEncoder {
         leagues.put("renegade", 6);
         leagues.put("paladin", 7);
 
-        return leagues.get(league);
-    }
-
-    private static int encodeTeam(String team) {
-        HashMap<String, Integer> teams = new HashMap<String, Integer>();
+        teams = new HashMap<String, Integer>();
 
         // Major
         teams.put("Ascension", 0);
@@ -164,11 +167,8 @@ public class matchEncoder {
         teams.put("Sorcerers", 14);
         teams.put("Wildebeests", 15);
 
-        return teams.get(team);
-    }
+        results = new HashMap<String, Integer>();
 
-    private static int encodeResult(String result) {
-        HashMap<String, Integer> results = new HashMap<String, Integer>();
         results.put("3-0", 0);
         results.put("3 - 0", 0);
         results.put("3-1", 1);
@@ -177,11 +177,27 @@ public class matchEncoder {
         results.put("3 - 2", 2);
         results.put("ff", 3);
         results.put("FF", 3);
+    }
+    
+    private int encodeLeague(String league) {
+        return leagues.get(league);
+    }
 
+    private int encodeTeam(String team) {
+        return teams.get(team);
+    }
+
+    private int encodeResult(String result) {
         return results.get(result);
     }
 
-    public static String encode(String league, String result, String winner, String loser) {
+    public String encode(String league, String result, String winner, String loser) {
+        ArrayList<String> cache_list = new ArrayList<String>();
+        String cache_value = cache.get(cache_list);
+        if (cache_value != null) {
+            return cache_value;
+        }
+
         int match1 = 0b0;
         int match2 = 0b0;
 
@@ -202,6 +218,8 @@ public class matchEncoder {
         match2 = match2 | encodeTeam(loser);
 
         String encoded = String.format("%1$02x", match1) + String.format("%1$02x", match2);
+
+        cache.put(cache_list, encoded);
 
         return encoded;
     }
