@@ -184,6 +184,15 @@ public class Forecast {
         List<Object> finalGameResult = playGame(team1, team2, ratings.get(team1), ratings.get(team2), true);
         winner = finalGameResult.get(0).toString();
 
+        // For debugging
+        // if (playoffTeams.get(0).contains("Sockeyes")) {
+            
+        // } else if (playoffTeams.get(1).contains("Sockeyes")) {
+            
+        // } else {
+        //     System.out.println("Yes");
+        // }
+
         List<Object> toReturn = new ArrayList<Object>();
         toReturn.add(winner);
         toReturn.add(finalTeams);
@@ -226,7 +235,8 @@ public class Forecast {
 
         // Begin simulating seasons
         for (Integer i = 1; i <= num_times; i++) {
-            System.out.println("Simulation #" + (i) + "       " + league);
+            // System.out.println("Simulation #" + (i) + "       " + league);
+
             // Make copies of useful data
             HashMap<String, Integer> ratingsCopy = new HashMap<String, Integer>(ratings);
             HashMap<String, Integer> winsCopy = new HashMap<String, Integer>(wins);
@@ -303,6 +313,7 @@ public class Forecast {
         toReturn.add(semiProbabilities);
         toReturn.add(finalProbabilities);
         toReturn.add(champProbabilities);
+        System.out.println(league + " has completed " + num_times + " simulations");
         return toReturn;
     }
 

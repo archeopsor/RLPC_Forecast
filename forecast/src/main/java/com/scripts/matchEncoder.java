@@ -193,6 +193,10 @@ public class MatchEncoder {
 
     public String encode(String league, String result, String winner, String loser) {
         ArrayList<String> cache_list = new ArrayList<String>();
+        cache_list.add(league);
+        cache_list.add(result);
+        cache_list.add(winner);
+        cache_list.add(loser);
         String cache_value = cache.get(cache_list);
         if (cache_value != null) {
             return cache_value;
