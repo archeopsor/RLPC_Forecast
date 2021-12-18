@@ -66,7 +66,7 @@ public class TiebreakersTest {
         List<List<Object>> schedule = Forecast.getSchedule("a");
         List<List<String>> teams = Tiebreakers.getPlayoffs(wins, schedule, "a");
         List<String> conf1 = Arrays.asList(new String[] {"Leopards", "Ravens", "Gulls", "Stallions"});
-        List<String> conf2 = Arrays.asList(new String[] {"Eskimos", "Miners", "Tempest", "Titans"});
+        List<String> conf2 = Arrays.asList(new String[] {"The Snowmen", "Miners", "Tempest", "Titans"});
         assertEquals(conf1, teams.get(1));
         assertEquals(conf2, teams.get(0));
     }

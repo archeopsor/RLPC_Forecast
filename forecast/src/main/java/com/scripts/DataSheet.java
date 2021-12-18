@@ -89,7 +89,7 @@ public class DataSheet {
         map.put("Cardinals", "CAR");
         map.put("Cougars", "COU");
         map.put("Embers", "EMB");
-        map.put("Eskimos", "ESK");
+        map.put("The Snowmen", "SNO");
         map.put("Genesis", "GEN");
         map.put("Gulls", "GUL");
         map.put("Jesters", "JES");

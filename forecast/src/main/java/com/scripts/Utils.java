@@ -36,7 +36,7 @@ public class Utils {
         teams.put("major", new String[] {"Bulls", "Lions", "Panthers", "Sharks", "Cobras", "Ducks", "Eagles", "Hawks", "Kings", "Lumberjacks", "Pirates", "Spartans", "Ascension", "Flames", "Storm", "Whitecaps"});
         teams.put("aaa", new String[] {"Bobcats", "Bulldogs", "Dolphins", "Tigers", "Geese", "Osprey", "Owls", "Vipers", "Knights", "Pioneers", "Raiders", "Trojans", "Entropy", "Heat", "Thunder", "Tundra"});
         teams.put("aa", new String[] {"Barracuda", "Jaguars", "Lynx", "Mustangs", "Falcons", "Herons", "Pythons", "Vultures", "Bandits", "Dukes", "Voyagers", "Warriors", "Avalanche", "Inferno", "Lightning", "Pulsars"});
-        teams.put("a", new String[] {"Cougars", "Gulls", "Leopards", "Stallions", "Cardinals", "Rattlers", "Ravens", "Pelicans", "Jesters", "Miners", "Wranglers", "Titans", "Embers", "Eskimos", "Genesis", "Tempest"});
+        teams.put("a", new String[] {"Cougars", "Gulls", "Leopards", "Stallions", "Cardinals", "Rattlers", "Ravens", "Pelicans", "Jesters", "Miners", "Wranglers", "Titans", "Embers", "The Snowmen", "Genesis", "Tempest"});
         teams.put("independent", new String[] {"Admirals", "Beavers", "Cyclones", "Dragons", "Centurions", "Galaxy", "Grizzlies", "Yellow Jackets", "Scorpions", "Thrashers", "Toucans", "Wizards", "Rhinos", "Sockeyes", "Wildcats", "Wolves"});
         teams.put("maverick", new String[] {"Camels", "Macaws", "Mages", "Raptors", "Jackrabbits", "Piranhas", "Terriers", "Zebras", "Captains", "Otters", "Tides", "Yetis", "Hornets", "Pandas", "Samurai", "Solar"});
         teams.put("renegade", new String[] {});

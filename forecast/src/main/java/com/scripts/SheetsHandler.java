@@ -28,7 +28,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 public class SheetsHandler {
     private static final String APPLICATION_NAME = "RLPC Forecast";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "C:\\Users\\Simi\\Desktop\\Projects\\RLPC_Forecast\\forecast\\src\\main\\resources\\tokens";
+    private static final String TOKENS_DIRECTORY_PATH = "C:\\Users\\Simcha\\Desktop\\Projects\\RLPC_Forecast\\forecast\\src\\main\\resources\\new_tokens";
 
     /**
      * Global instance of the scopes required by this quickstart. If modifying these

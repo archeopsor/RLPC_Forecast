@@ -81,7 +81,7 @@ public class MatchEncoder {
         teams.put("Cardinals", 0);
         teams.put("Cougars", 1);
         teams.put("Embers", 2);
-        teams.put("Eskimos", 3);
+        teams.put("The Snowmen", 3);
         teams.put("Genesis", 4);
         teams.put("Gulls", 5);
         teams.put("Jesters", 6);

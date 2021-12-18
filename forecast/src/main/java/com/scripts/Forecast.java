@@ -11,8 +11,8 @@ import java.util.List;
 
 public class Forecast {
 
-    private static final String p4SheetId = "17tPXpZACXlqrCS3gYo59C5gbZyp3oguVdjwsgWQJkcA";
-    private static final String indySheetId = "1Ef08kD375wbs5VHm_EFQw3C6k4dt7Aw69wyDfVKGVHc";
+    private static final String p4SheetId = "11OBavRBbU5ptUDdBYd_kMkErOFxSVsEdoIQrMEZ06AU";
+    private static final String indySheetId = "1OARUXaL1X3uVme_0HY5p6NucgxmV4ckxKdkyNlmKXwU";
     private static final String powerRankingsSheetId = "1Tlc_TgGMrY5aClFF-Pb5xvtKrJ1Hn2PJOLy2fUDDdFI";
     private static final String forecastSheetId = "1GEFufHK5xt0WqThYC7xaK2gz3cwjinO43KOsb7HogQQ";
 
@@ -210,6 +210,8 @@ public class Forecast {
         if (!Utils.isValidLeague(league)) {
             throw new IOException("Invalid League: " + league);
         }
+
+        System.out.println("Starting simulation: " + league + ", n = " + num_times);
 
         // Useful data
         DataSheet dataSheet = new DataSheet(league);
