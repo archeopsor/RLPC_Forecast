@@ -39,7 +39,7 @@ public class Utils {
         teams.put("a", new String[] {"Cougars", "Gulls", "Leopards", "Stallions", "Cardinals", "Rattlers", "Ravens", "Pelicans", "Jesters", "Miners", "Wranglers", "Titans", "Embers", "The Snowmen", "Genesis", "Tempest"});
         teams.put("independent", new String[] {"Admirals", "Beavers", "Cyclones", "Dragons", "Centurions", "Galaxy", "Grizzlies", "Yellow Jackets", "Scorpions", "Thrashers", "Toucans", "Wizards", "Rhinos", "Sockeyes", "Wildcats", "Wolves"});
         teams.put("maverick", new String[] {"Camels", "Macaws", "Mages", "Raptors", "Jackrabbits", "Piranhas", "Terriers", "Zebras", "Captains", "Otters", "Tides", "Yetis", "Hornets", "Pandas", "Samurai", "Solar"});
-        teams.put("renegade", new String[] {});
+        teams.put("renegade", new String[] {"Coyotes", "Harriers", "Puffins", "Witches", "Gorillas", "Hounds", "Stingrays", "Warthogs", "Hurricanes", "Pilots", "Werewolves", "Wolverines", "Comets", "Fireflies", "Koalas", "Vikings"});
         teams.put("paladin", new String[] {});
         
         return teams.get(league);
@@ -48,12 +48,14 @@ public class Utils {
     public static boolean isValidLeague(String league) {
         league = league.toLowerCase();
         switch(league) {
-            case "major": return true;
+            //case "major": return true;
             case "aaa": return true;
             case "aa": return true;
             case "a": return true;
             case "independent": return true;
             case "maverick": return true;
+            case "renegade": return true;
+            //case "paladin": return true;
             default: return false;
             }
         }

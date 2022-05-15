@@ -11,8 +11,8 @@ import java.util.List;
 
 public class Forecast {
 
-    private static final String p4SheetId = "11OBavRBbU5ptUDdBYd_kMkErOFxSVsEdoIQrMEZ06AU";
-    private static final String indySheetId = "1OARUXaL1X3uVme_0HY5p6NucgxmV4ckxKdkyNlmKXwU";
+    private static final String p4SheetId = "1k_2u8zetvYpBqcW2akudLGmUMVajecaoZSHx4Sh0FYQ";
+    private static final String indySheetId = "1XZfwWVk_m0Emd8ci52QMmZ4NEMQphA9daWJ_iuAQaPY";
     private static final String powerRankingsSheetId = "1Tlc_TgGMrY5aClFF-Pb5xvtKrJ1Hn2PJOLy2fUDDdFI";
     private static final String forecastSheetId = "1GEFufHK5xt0WqThYC7xaK2gz3cwjinO43KOsb7HogQQ";
 
@@ -322,16 +322,17 @@ public class Forecast {
     public static void main(String[] args) throws Exception {
         // Arguments
         // String league = "major";
-        int num_times = 1000000;
+        int num_times = 1_000_000;
         boolean official = true;
 
         // System.out.println(runForecast(league, num_times, official));
 
-        runForecast("major", num_times, official);
-        runForecast("aaa", num_times, official);
-        runForecast("aa", num_times, official);
-        runForecast("a", num_times, official);
-        runForecast("independent", num_times, official);
-        runForecast("maverick", num_times, official);
+        //runForecast("major", num_times, official);
+        // runForecast("aaa", num_times, official);
+        // runForecast("aa", num_times, official);
+        // runForecast("a", num_times, official);
+        // runForecast("independent", num_times, official);
+        // runForecast("maverick", num_times, official);
+        runForecast("renegade", num_times, official);
     }
 }
