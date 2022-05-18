@@ -98,7 +98,10 @@ public class Forecast {
             } else if (schedule.get(i).get(1).toString().equals("Y")) {     // Preseason games
                 schedule.remove(i);
                 i--;
-            } else if (schedule.get(i).get(6).toString().length() > 0) {    // If there's already a winner, meaning game has already been played
+            } else if (schedule.get(i).get(6).toString().length() > 0 & schedule.get(i).size() == 7) {      // If there's a winner listed but no score, assume not played
+                schedule.get(i).remove(6);
+                continue;
+            } else if (schedule.get(i).get(6).toString().length() > 0) {    // If there's already a winner and score, meaning game has already been played
                 List<Object> toRemove = schedule.remove(i);
                 tiebreakSchedule.add(toRemove);
                 i--;
@@ -214,7 +217,7 @@ public class Forecast {
         System.out.println("Starting simulation: " + league + ", n = " + num_times);
 
         // Useful data
-        DataSheet dataSheet = new DataSheet(league);
+        //DataSheet dataSheet = new DataSheet(league);
         List<List<Object>> schedule = getSchedule(league);
         HashMap<String, Integer> wins = getWins(league);
         HashMap<String, Integer> ratings = mongo.getElo();
@@ -246,7 +249,7 @@ public class Forecast {
             List<Object> simResult = simulateSeason(league, scheduleCopy, winsCopy, ratingsCopy);
 
             // Add results to lists
-            dataSheet.addSimToCSV(simResult);
+            //dataSheet.addSimToCSV(simResult);
             playoffTeams.addAll((List<String>) simResult.get(3));
             semiTeams.addAll((List<String>) simResult.get(2));
             finalTeams.addAll((List<String>) simResult.get(1));
@@ -262,7 +265,7 @@ public class Forecast {
         // sims.clear();               // Save a chunk of memory hopefully
         // dataSheet.save();
         // dataSheet.simsToCSV(sims);
-        dataSheet.closeCSV();
+        //dataSheet.closeCSV();
 
         // Calculate results
         for (String team : wins.keySet()) {
@@ -332,7 +335,7 @@ public class Forecast {
         // runForecast("aa", num_times, official);
         // runForecast("a", num_times, official);
         // runForecast("independent", num_times, official);
-        // runForecast("maverick", num_times, official);
+        runForecast("maverick", num_times, official);
         runForecast("renegade", num_times, official);
     }
 }
