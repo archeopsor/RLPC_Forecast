@@ -82,31 +82,8 @@ public class Forecast {
         return result;
     }
 
-    private static List<Object> simulateSeason(String league, List<List<Object>> schedule, HashMap<String, Integer> wins,
+    private static List<Object> simulateSeason(String league, List<List<Object>> schedule, List<List<Object>> tiebreakSchedule, HashMap<String, Integer> wins,
             HashMap<String, Integer> ratings) throws Exception {
-
-        // Get a copy of the schedule for use in tiebreakers
-        // Both played and unplayed games will be added to this list
-        List<List<Object>> tiebreakSchedule = new ArrayList<List<Object>>();
-
-        for (int i = 0; i < schedule.size(); i++) {
-            if (schedule.get(i).size() == 6) { // If there's no winner
-                continue;
-            } else if (schedule.get(i).get(0).equals("Day")) {              // Header
-                schedule.remove(i);
-                i--;
-            } else if (schedule.get(i).get(1).toString().equals("Y")) {     // Preseason games
-                schedule.remove(i);
-                i--;
-            } else if (schedule.get(i).get(6).toString().length() > 0 & schedule.get(i).size() == 7) {      // If there's a winner listed but no score, assume not played
-                schedule.get(i).remove(6);
-                continue;
-            } else if (schedule.get(i).get(6).toString().length() > 0) {    // If there's already a winner and score, meaning game has already been played
-                List<Object> toRemove = schedule.remove(i);
-                tiebreakSchedule.add(toRemove);
-                i--;
-            } 
-        }
 
         for (List<Object> game : schedule) {
             String team1 = game.get(3).toString();
@@ -221,6 +198,27 @@ public class Forecast {
         List<List<Object>> schedule = getSchedule(league);
         HashMap<String, Integer> wins = getWins(league);
         HashMap<String, Integer> ratings = mongo.getElo();
+        // Get a copy of the schedule for use in tiebreakers
+        // Both played and unplayed games will be added to this list
+        List<List<Object>> tiebreakSchedule = new ArrayList<List<Object>>();
+        for (int i = 0; i < schedule.size(); i++) {
+            if (schedule.get(i).size() == 6) { // If there's no winner
+                continue;
+            } else if (schedule.get(i).get(0).equals("Day")) {              // Header
+                schedule.remove(i);
+                i--;
+            } else if (schedule.get(i).get(1).toString().equals("Y")) {     // Preseason games
+                schedule.remove(i);
+                i--;
+            } else if (schedule.get(i).get(6).toString().length() > 0 & schedule.get(i).size() == 7) {      // If there's a winner listed but no score, assume not played
+                schedule.get(i).remove(6);
+                continue;
+            } else if (schedule.get(i).get(6).toString().length() > 0) {    // If there's already a winner and score, meaning game has already been played
+                List<Object> toRemove = schedule.remove(i);
+                tiebreakSchedule.add(toRemove);
+                i--;
+            } 
+        }
         // ArrayList<List<Object>> sims = new ArrayList<List<Object>>();
 
         // List of teams that make it to each stage
@@ -246,7 +244,8 @@ public class Forecast {
             HashMap<String, Integer> ratingsCopy = new HashMap<String, Integer>(ratings);
             HashMap<String, Integer> winsCopy = new HashMap<String, Integer>(wins);
             List<List<Object>> scheduleCopy = new ArrayList<List<Object>>(schedule);
-            List<Object> simResult = simulateSeason(league, scheduleCopy, winsCopy, ratingsCopy);
+            List<List<Object>> tiebreakCopy = new ArrayList<List<Object>>(tiebreakSchedule);
+            List<Object> simResult = simulateSeason(league, scheduleCopy, tiebreakCopy, winsCopy, ratingsCopy);
 
             // Add results to lists
             //dataSheet.addSimToCSV(simResult);
