@@ -329,11 +329,11 @@ public class Forecast {
 
         // System.out.println(runForecast(league, num_times, official));
 
-        //runForecast("major", num_times, official);
-        // runForecast("aaa", num_times, official);
-        // runForecast("aa", num_times, official);
-        // runForecast("a", num_times, official);
-        // runForecast("independent", num_times, official);
+        // runForecast("major", num_times, official);
+        runForecast("aaa", num_times, official);
+        runForecast("aa", num_times, official);
+        runForecast("a", num_times, official);
+        runForecast("independent", num_times, official);
         runForecast("maverick", num_times, official);
         runForecast("renegade", num_times, official);
     }

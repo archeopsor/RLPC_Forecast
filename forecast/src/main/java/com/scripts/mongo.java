@@ -35,8 +35,8 @@ public class mongo {
 
         while (cursor.hasNext()) {
             Document team = cursor.next();
-            Document elo = (Document) team.get("elo");
-            ratings.put(team.get("team").toString(), Integer.parseInt(elo.get("elo").toString()));
+            Integer elo = (Integer) team.get("current_elo");
+            ratings.put(team.get("_id").toString(), elo);
         }
         return ratings;
     }
