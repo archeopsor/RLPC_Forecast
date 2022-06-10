@@ -221,7 +221,11 @@ public class Tiebreakers {
         List<String> headToHeadSeriesWinners = new ArrayList<String>(); // Should have size 2 at the end
         HashMap<String, Integer> headToHeadGamesLosses = new HashMap<String, Integer>(); // Should end with size 2
         for (List<Object> game : schedule) {
-            if (game.get(3).toString().equals(team1) && game.get(5).toString().equals(team2)) {
+            if (game.get(6).toString().equals("Double FF") && teams.contains(game.get(3).toString()) && teams.contains(game.get(5).toString())) {
+                headToHeadGamesLosses.put(team1, 3);
+                headToHeadGamesLosses.put(team2, 3);
+                headToHeadSeriesWinners.add("N/A");
+            } else if (game.get(3).toString().equals(team1) && game.get(5).toString().equals(team2)) {
                 headToHeadSeriesWinners.add(game.get(6).toString());
                 Integer losses = game.get(7).equals("FF") ? 3 : Integer.parseInt(game.get(7).toString().split(" - ")[1]);
                 headToHeadGamesLosses.put(game.get(6).toString(), losses + 3);
@@ -229,7 +233,7 @@ public class Tiebreakers {
                 headToHeadSeriesWinners.add(game.get(6).toString());
                 Integer losses = game.get(7).equals("FF") ? 3 : Integer.parseInt(game.get(7).toString().split(" - ")[1]);
                 headToHeadGamesLosses.put(game.get(6).toString(), losses + 3);
-            }
+            } 
         }
 
         // See if one team won both head-to-head series
