@@ -231,9 +231,9 @@ public class Forecast {
         HashMap<String, Float> finalProbabilities = new HashMap<String, Float>();
         HashMap<String, Float> champProbabilities = new HashMap<String, Float>();
 
-        HashMap<String, Float> predictedRecords = new HashMap<String, Float>();
+        HashMap<String, Integer> predictedRecords = new HashMap<String, Integer>();
         for (String team : wins.keySet()) {
-            predictedRecords.put(team, 0.0f);
+            predictedRecords.put(team, 0);
         }
 
         // Begin simulating seasons
@@ -254,9 +254,16 @@ public class Forecast {
             finalTeams.addAll((List<String>) simResult.get(1));
             champTeams.add(simResult.get(0).toString());
             HashMap<String, Integer> simWins = (HashMap<String, Integer>) simResult.get(4);
+
             for (String team : simWins.keySet()) {
-                predictedRecords.put(team, predictedRecords.get(team) + (float) simWins.get(team));
+                predictedRecords.put(team, simWins.get(team) + predictedRecords.get(team));
             }
+            // if (simWins.get("Wizards") != 17.0) {
+            //     System.out.println("B");
+            // }
+            // if (predictedRecords.get("Wizards") / (i) != 17.0) {
+            //     System.out.println("A");
+            // }
         }
 
         // Log data to sheet
@@ -267,6 +274,8 @@ public class Forecast {
         //dataSheet.closeCSV();
 
         // Calculate results
+        HashMap<String, Float> recordsMap = new HashMap<String, Float>();
+
         for (String team : wins.keySet()) {
             Integer playoffFrequency = Collections.frequency(playoffTeams, team);
             playoffProbabilities.put(team, (float) (playoffFrequency / (float) num_times));
@@ -279,8 +288,8 @@ public class Forecast {
 
             Integer champFrequency = Collections.frequency(champTeams, team); 
             champProbabilities.put(team, (float) (champFrequency / (float) num_times));
-
-            predictedRecords.put(team, predictedRecords.get(team) / (float) num_times);
+            
+            recordsMap.put(team, predictedRecords.get(team) / (float) num_times);
         }
 
         if (official) {
@@ -300,7 +309,7 @@ public class Forecast {
             List<List<Object>> teams = SheetsHandler.getValues(forecastSheetId, "Most Recent!A"+startingRow+":A"+(startingRow+15));
             for (List<Object> teamArray : teams) {
                 String team = teamArray.get(0).toString();
-                teamArray.add(predictedRecords.get(team));
+                teamArray.add(recordsMap.get(team));
                 teamArray.add(playoffProbabilities.get(team));
                 teamArray.add(semiProbabilities.get(team));
                 teamArray.add(finalProbabilities.get(team));
@@ -312,7 +321,7 @@ public class Forecast {
         }
 
         List<HashMap<String, Float>> toReturn = new ArrayList<HashMap<String, Float>>();
-        toReturn.add(predictedRecords);
+        toReturn.add(recordsMap);
         toReturn.add(playoffProbabilities);
         toReturn.add(semiProbabilities);
         toReturn.add(finalProbabilities);
